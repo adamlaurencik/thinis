@@ -1,0 +1,28 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.6.+'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "18.0.1"
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 18
+    }
+}
+
+dependencies {
+	compile 'com.android.support:appcompat-v7:+'
+    compile 'org.jsoup:jsoup:1.6.1'
+}

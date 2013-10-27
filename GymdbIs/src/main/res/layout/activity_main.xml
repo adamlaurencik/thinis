@@ -1,0 +1,111 @@
+
+    <TableLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        tools:ignore="MergeRootFrame"
+        android:id="@+id/tableLayout1">
+
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="openNews">
+
+            <Button
+                android:id="@+id/news"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="4"
+                android:singleLine="false"
+                android:background="@drawable/oznamy" />
+
+
+            <Button
+                android:id="@+id/newsText"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="6"
+
+                android:layout_margin="5dp"
+                android:background="@drawable/text"
+                android:textColor="#fbff6e"
+                android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                android:padding="10dp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/timetable"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="4"
+
+                android:enabled="false"
+                android:clickable="true"
+                android:background="@drawable/rozvrh" />
+
+            <Button
+                android:id="@+id/timetableText"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="6"
+
+                android:layout_margin="5dp"
+                android:background="@drawable/text" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/substitution"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="4"
+                android:background="@drawable/suplovanie" />
+
+
+            <Button
+                android:id="@+id/substitutionText"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="6"
+
+                android:layout_margin="5dp"
+                android:background="@drawable/text" />
+        </TableRow>
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/homework"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="4" />
+
+            <Button
+                android:id="@+id/homeworkText"
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="6"
+
+                android:layout_margin="5dp"
+                android:background="@drawable/text" />
+        </TableRow>
+    </TableLayout>
