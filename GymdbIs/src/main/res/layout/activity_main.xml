@@ -28,19 +28,19 @@
             <Button
                 android:id="@+id/newsText"
                 android:layout_width="0dip"
-                android:layout_height="match_parent"
+                android:layout_height="fill_parent"
                 android:layout_weight="6"
 
                 android:layout_margin="5dp"
                 android:background="@drawable/text"
                 android:textColor="#fbff6e"
-                android:padding="10dp"
-                android:singleLine="false" />
+                android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                android:padding="10dp" />
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1" >
 

@@ -1,9 +1,4 @@
-*.gradle
+.gradle
 /local.properties
 /.idea/workspace.xml
 .DS_Store
-.idea
-*.iml
-/gen
-/gradle
-/libs
