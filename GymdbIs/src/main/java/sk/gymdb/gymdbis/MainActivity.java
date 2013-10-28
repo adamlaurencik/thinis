@@ -1,5 +1,8 @@
 package sk.gymdb.gymdbis;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -43,6 +46,7 @@ public class MainActivity extends ActionBarActivity {
         newsView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (gymdb.getNews()!=null){
                 final int action= motionEvent.getAction();
 
 
@@ -88,7 +92,7 @@ public class MainActivity extends ActionBarActivity {
                         }
 
                         break;
-                }}
+                }}}
 
                 return true;
             }
@@ -121,8 +125,9 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected LinkedHashSet<Notice> doInBackground(String... strings) {
             publishProgress();
-            URL url = null;
-            Gymdb help= new Gymdb();
+            if (isOnline()){
+             URL url;
+             LinkedHashSet<Notice> set= new LinkedHashSet<Notice>();
             try{
 
                 url = new URL(strings[0]);
@@ -144,18 +149,21 @@ public class MainActivity extends ActionBarActivity {
                     Element announcement=doc.select("div[class=articlebox]").get(i);
                     notice.setTitle(announcement.select("h2").text());
                     notice.setMessage(announcement.select("div[class=gray]").text());
-                    help.addNotice(notice);
+                    set.add(notice);
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return help.getNews();
+            return set;}
+            else
+                return null;
         }
 
         @Override
         protected void onPostExecute(LinkedHashSet<Notice> notices) {
+            if (notices!=null){
            gymdb.setNews(notices);
             if(gymdb.getNoticeById(i).getTitle().length()>80){
                 String title=gymdb.getNoticeById(i).getTitle().substring(0,77)+"...";
@@ -163,11 +171,20 @@ public class MainActivity extends ActionBarActivity {
             }else
                 button.setText(gymdb.getNoticeById(i).getHtmlString());
 
-        }
+        } else button.setText("Chyba pripojenia");
+            }
 
         @Override
         protected void onProgressUpdate(Void... values) {
             button.setText("Downloading data...");
+        }
+        public boolean isOnline(){
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+                return true;
+            }
+            return false;
         }
     }
 
