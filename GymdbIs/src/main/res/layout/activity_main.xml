@@ -34,8 +34,8 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/text"
                 android:textColor="#fbff6e"
-                android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:singleLine="false" />
         </TableRow>
 
         <TableRow

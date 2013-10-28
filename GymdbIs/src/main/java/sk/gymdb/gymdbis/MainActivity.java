@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
@@ -26,29 +27,70 @@ public class MainActivity extends ActionBarActivity {
        Gymdb gymdb= new Gymdb();
        Button button;
        int i=0;
+        float x1=0;
+        float x2=0;
+        float y1=0;
+        float y2=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         button=(Button)findViewById(R.id.newsText);
         View newsView= (View) findViewById(R.id.newsText);
+        final Button touchView= (Button) findViewById(R.id.substitutionText);
         DataDownloader downloader= new DataDownloader();
         downloader.execute("http://www.gymdb.sk/aktuality.html?page_id=118");
-        newsView.setOnClickListener(new View.OnClickListener() {
+        newsView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
-                if(i<gymdb.getNews().size()-1){
-                    i=i+1;
-                }
-                else{
-                    i=0;
-                }
-                if(gymdb.getNoticeById(i).getTitle().length()>80){
-                    String title=gymdb.getNoticeById(i).getTitle().substring(0,77)+"...";
-                    button.setText(Html.fromHtml("<b>" + title + "</b>"));
-                }else
-                button.setText(gymdb.getNoticeById(i).getHtmlString());
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                final int action= motionEvent.getAction();
 
+
+                switch (action){
+                    case MotionEvent.ACTION_DOWN:
+                          x1=motionEvent.getX();
+                          y1=motionEvent.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                         x2=motionEvent.getX();
+                         y2=motionEvent.getY();
+                         float xdistance=Math.abs(x2-x1);
+                         float ydistance=Math.abs(y2-y1);
+                        if (ydistance<80){
+                        if ((xdistance<80)){
+                            //kliknutie
+                        }else
+                        if(x1>x2){
+                            if(i>0){
+                                i=i-1;
+                            }
+                            else{
+                                i=gymdb.getNews().size()-1;
+                            }
+                            if(gymdb.getNoticeById(i).getTitle().length()>80){
+                                String title=gymdb.getNoticeById(i).getTitle().substring(0,77)+"...";
+                                button.setText(Html.fromHtml("<b>" + title + "</b>"));
+                            }else
+                                button.setText(gymdb.getNoticeById(i).getHtmlString());
+                        }else {
+                            if(i<gymdb.getNews().size()-1){
+                                i=i+1;
+                            }
+                            else{
+                                i=0;
+                            }
+                            if(gymdb.getNoticeById(i).getTitle().length()>80){
+                                String title=gymdb.getNoticeById(i).getTitle().substring(0,77)+"...";
+                                button.setText(Html.fromHtml("<b>" + title + "</b>"));
+                            }else
+                                button.setText(gymdb.getNoticeById(i).getHtmlString());
+
+                        }
+
+                        break;
+                }}
+
+                return true;
             }
         });
 
