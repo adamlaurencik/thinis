@@ -35,7 +35,7 @@ import java.net.URLConnection;
 import java.util.LinkedHashSet;
 
 public class MainActivity extends Activity {
-    NewsService gymdb = new NewsService();
+    NewsService newsService = new NewsService();
     Button button;
     Button button2;
     int i = 0;
@@ -64,11 +64,11 @@ public class MainActivity extends Activity {
             Register register = new Register();
             register.execute();
         }
-        downloader.execute("http://www.gymdb.sk/aktuality.html?page_id=118");
+        downloader.execute("http://www.newsService.sk/aktuality.html?page_id=118");
         newsView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (gymdb.getNews() != null) {
+                if (newsService.getNews() != null) {
                     final int action = motionEvent.getAction();
 
 
@@ -82,28 +82,28 @@ public class MainActivity extends Activity {
                             y2 = motionEvent.getY();
                             float xdistance = Math.abs(x2 - x1);
                             float ydistance = Math.abs(y2 - y1);
-                            if (gymdb.getNews() != null) {
+                            if (newsService.getNews() != null) {
                                 if ((xdistance < 80)) {
                                     if (ydistance < 80) {
                                     }
                                 } else if (x1 > x2) {
-                                    if (i < gymdb.getNews().size() - 1) {
+                                    if (i < newsService.getNews().size() - 1) {
                                         i = i + 1;
                                     }
-                                    if (gymdb.getNewsItemById(i).getTitle().length() > 80) {
-                                        String title = gymdb.getNewsItemById(i).getTitle().substring(0, 77) + "...";
+                                    if (newsService.getNewsItemById(i).getTitle().length() > 80) {
+                                        String title = newsService.getNewsItemById(i).getTitle().substring(0, 77) + "...";
                                         button.setText(Html.fromHtml("<b>" + title + "</b>"));
                                     } else
-                                        button.setText(gymdb.getNewsItemById(i).getHtmlString());
+                                        button.setText(newsService.getNewsItemById(i).getHtmlString());
                                 } else {
                                     if (i > 0) {
                                         i = i - 1;
                                     }
-                                    if (gymdb.getNewsItemById(i).getTitle().length() > 80) {
-                                        String title = gymdb.getNewsItemById(i).getTitle().substring(0, 77) + "...";
+                                    if (newsService.getNewsItemById(i).getTitle().length() > 80) {
+                                        String title = newsService.getNewsItemById(i).getTitle().substring(0, 77) + "...";
                                         button.setText(Html.fromHtml("<b>" + title + "</b>"));
                                     } else
-                                        button.setText(gymdb.getNewsItemById(i).getHtmlString());
+                                        button.setText(newsService.getNewsItemById(i).getHtmlString());
 
                                 }
                             }
@@ -233,12 +233,12 @@ public class MainActivity extends Activity {
         @Override
         protected void onPostExecute(LinkedHashSet<NewsItem> notices) {
             if (notices != null) {
-                gymdb.setNews(notices);
-                if (gymdb.getNewsItemById(i).getTitle().length() > 80) {
-                    String title = gymdb.getNewsItemById(i).getTitle().substring(0, 77) + "...";
+                newsService.setNews(notices);
+                if (newsService.getNewsItemById(i).getTitle().length() > 80) {
+                    String title = newsService.getNewsItemById(i).getTitle().substring(0, 77) + "...";
                     button.setText(Html.fromHtml("<b>" + title + "</b>"));
                 } else
-                    button.setText(gymdb.getNewsItemById(i).getHtmlString());
+                    button.setText(newsService.getNewsItemById(i).getHtmlString());
 
             } else button.setText("Chyba pripojenia");
         }
