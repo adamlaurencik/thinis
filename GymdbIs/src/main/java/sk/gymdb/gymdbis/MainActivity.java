@@ -1,14 +1,13 @@
 package sk.gymdb.gymdbis;
 
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,31 +22,31 @@ import java.net.URLConnection;
 import java.util.LinkedHashSet;
 
 public class MainActivity extends ActionBarActivity {
-       Gymdb gymdb= new Gymdb();
-       Button button;
-       int i=0;
+    Gymdb gymdb = new Gymdb();
+    Button button;
+    int i = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        button=(Button)findViewById(R.id.newsText);
-        View newsView= (View) findViewById(R.id.newsText);
-        DataDownloader downloader= new DataDownloader();
+        button = (Button) findViewById(R.id.newsText);
+        View newsView = (View) findViewById(R.id.newsText);
+        DataDownloader downloader = new DataDownloader();
         downloader.execute("http://www.gymdb.sk/aktuality.html?page_id=118");
         newsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(i<gymdb.getNews().size()-1){
-                    i=i+1;
+                if (i < gymdb.getNews().size() - 1) {
+                    i = i + 1;
+                } else {
+                    i = 0;
                 }
-                else{
-                    i=0;
-                }
-                if(gymdb.getNoticeById(i).getTitle().length()>80){
-                    String title=gymdb.getNoticeById(i).getTitle().substring(0,77)+"...";
+                if (gymdb.getNoticeById(i).getTitle().length() > 80) {
+                    String title = gymdb.getNoticeById(i).getTitle().substring(0, 77) + "...";
                     button.setText(Html.fromHtml("<b>" + title + "</b>"));
-                }else
-                button.setText(gymdb.getNoticeById(i).getHtmlString());
+                } else
+                    button.setText(gymdb.getNoticeById(i).getHtmlString());
 
             }
         });
@@ -57,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -74,14 +73,15 @@ public class MainActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    public class DataDownloader extends AsyncTask<String,Void,LinkedHashSet<Notice>> {
+
+    public class DataDownloader extends AsyncTask<String, Void, LinkedHashSet<Notice>> {
 
         @Override
         protected LinkedHashSet<Notice> doInBackground(String... strings) {
             publishProgress();
             URL url = null;
-            Gymdb help= new Gymdb();
-            try{
+            Gymdb help = new Gymdb();
+            try {
 
                 url = new URL(strings[0]);
                 URLConnection spoof = url.openConnection();
@@ -98,8 +98,8 @@ public class MainActivity extends ActionBarActivity {
                 Document doc = Jsoup.parse(html);
                 Elements news = doc.select("div[class=articlebox]");
                 for (int i = 0; i < news.size(); i++) {
-                    Notice notice=new Notice();
-                    Element announcement=doc.select("div[class=articlebox]").get(i);
+                    Notice notice = new Notice();
+                    Element announcement = doc.select("div[class=articlebox]").get(i);
                     notice.setTitle(announcement.select("h2").text());
                     notice.setMessage(announcement.select("div[class=gray]").text());
                     help.addNotice(notice);
@@ -114,11 +114,11 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(LinkedHashSet<Notice> notices) {
-           gymdb.setNews(notices);
-            if(gymdb.getNoticeById(i).getTitle().length()>80){
-                String title=gymdb.getNoticeById(i).getTitle().substring(0,77)+"...";
+            gymdb.setNews(notices);
+            if (gymdb.getNoticeById(i).getTitle().length() > 80) {
+                String title = gymdb.getNoticeById(i).getTitle().substring(0, 77) + "...";
                 button.setText(Html.fromHtml("<b>" + title + "</b>"));
-            }else
+            } else
                 button.setText(gymdb.getNoticeById(i).getHtmlString());
 
         }
@@ -128,7 +128,6 @@ public class MainActivity extends ActionBarActivity {
             button.setText("Downloading data...");
         }
     }
-
 
 
 }
