@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="google-play-services">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$APPLICATION_HOME_DIR$/sdk/extras/google/google_play_services/samples/auth/src" />
+      <root url="file://$APPLICATION_HOME_DIR$/sdk/extras/google/google_play_services/samples/maps/src" />
+      <root url="file://$APPLICATION_HOME_DIR$/sdk/extras/google/google_play_services/samples/plus/src" />
+      <root url="file://$APPLICATION_HOME_DIR$/sdk/extras/google/google_play_services/samples/admob/src" />
+      <root url="file://$APPLICATION_HOME_DIR$/sdk/extras/google/google_play_services/samples/wallet/src" />
+      <root url="file://$APPLICATION_HOME_DIR$/sdk/extras/google/google_play_services/samples/panorama/src" />
+      <root url="file://$APPLICATION_HOME_DIR$/sdk/extras/google/google_play_services/libproject/google-play-services_lib/src" />
+    </SOURCES>
+  </library>
+</component>

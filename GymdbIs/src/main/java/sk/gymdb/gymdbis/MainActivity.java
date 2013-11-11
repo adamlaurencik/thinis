@@ -1,17 +1,27 @@
 package sk.gymdb.gymdbis;
 
+import android.app.Activity;
+import android.app.IntentService;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v4.content.WakefulBroadcastReceiver;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,22 +36,35 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedHashSet;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
        Gymdb gymdb= new Gymdb();
        Button button;
+       Button button2;
        int i=0;
         float x1=0;
         float x2=0;
         float y1=0;
         float y2=0;
+        Context context;
+        String msg="";
+        GoogleCloudMessaging gcm;
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context=this;
         setContentView(R.layout.activity_main);
         button=(Button)findViewById(R.id.newsText);
+        button2=(Button)findViewById(R.id.substitutionText);
         View newsView= (View) findViewById(R.id.newsText);
         final Button touchView= (Button) findViewById(R.id.substitutionText);
         DataDownloader downloader= new DataDownloader();
+         gcm = GoogleCloudMessaging.getInstance(context);
+
+        if(checkPlayServices()){
+        Register register= new Register();
+             register.execute();
+        }
         downloader.execute("http://www.gymdb.sk/aktuality.html?page_id=118");
         newsView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -60,16 +83,14 @@ public class MainActivity extends ActionBarActivity {
                          y2=motionEvent.getY();
                          float xdistance=Math.abs(x2-x1);
                          float ydistance=Math.abs(y2-y1);
-                        if (ydistance<80){
+                        if(gymdb.getNews()!=null){
                         if ((xdistance<80)){
-                            //kliknutie
+                                if(ydistance<80){
+                                }
                         }else
                         if(x1>x2){
-                            if(i>0){
-                                i=i-1;
-                            }
-                            else{
-                                i=gymdb.getNews().size()-1;
+                            if(i<gymdb.getNews().size()-1){
+                                i=i+1;
                             }
                             if(gymdb.getNoticeById(i).getTitle().length()>80){
                                 String title=gymdb.getNoticeById(i).getTitle().substring(0,77)+"...";
@@ -77,11 +98,8 @@ public class MainActivity extends ActionBarActivity {
                             }else
                                 button.setText(gymdb.getNoticeById(i).getHtmlString());
                         }else {
-                            if(i<gymdb.getNews().size()-1){
-                                i=i+1;
-                            }
-                            else{
-                                i=0;
+                            if(i>0){
+                                i=i-1;
                             }
                             if(gymdb.getNoticeById(i).getTitle().length()>80){
                                 String title=gymdb.getNoticeById(i).getTitle().substring(0,77)+"...";
@@ -89,15 +107,29 @@ public class MainActivity extends ActionBarActivity {
                             }else
                                 button.setText(gymdb.getNoticeById(i).getHtmlString());
 
-                        }
+                        }}
 
                         break;
-                }}}
+                }}
 
                 return true;
             }
         });
 
+        }
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS ) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Log.i("tag","This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 
 
@@ -119,6 +151,38 @@ public class MainActivity extends ActionBarActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public class Register extends AsyncTask<Void, String, String>{
+        @Override
+        protected String doInBackground(Void...voids) {
+            while (msg=="SERVICE_NOT_AVAILABLE" || msg=="") {
+            String regID;
+                try {
+                   regID=gcm.register("730751150432");
+                    msg="connected"+regID;
+                } catch (IOException e) {
+                    msg=e.getMessage();
+                    e.printStackTrace();
+                }}
+            return msg;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            button2.setText(s);
+        }
+    }
+    public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Explicitly specify that GcmIntentService will handle the intent.
+            ComponentName comp = new ComponentName(context.getPackageName(),
+                    MainActivity.class.getName());
+            // Start the service, keeping the device awake while it is launching.
+            startWakefulService(context, (intent.setComponent(comp)));
+            setResultCode(Activity.RESULT_OK);
+        }
     }
     public class DataDownloader extends AsyncTask<String,Void,LinkedHashSet<Notice>> {
 

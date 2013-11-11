@@ -21,8 +21,10 @@ android {
         targetSdkVersion 18
     }
 }
-
 dependencies {
-	compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:appcompat-v7:+'
     compile 'org.jsoup:jsoup:1.6.1'
-}
+    compile 'com.android.support:support-v4:13.0.+'
+    compile "com.google.android.gms:play-services:3.1.+"
+    compile files('google-play-services_lib/libs/google-play-services.jar')
+    }
