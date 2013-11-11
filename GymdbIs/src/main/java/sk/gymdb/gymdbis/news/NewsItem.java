@@ -1,4 +1,4 @@
-package sk.gymdb.gymdbis;
+package sk.gymdb.gymdbis.news;
 
 /**
  * Created by Admin on 10/26/13.
@@ -8,11 +8,11 @@ import android.text.Spanned;
 
 import java.util.HashSet;
 
-public class Notice {
+public class NewsItem {
     private String message;
     private String title;
     private HashSet<String> images= new HashSet<String>();
-    public Notice(){
+    public NewsItem(){
 
     }
     public void setMessage(String message){

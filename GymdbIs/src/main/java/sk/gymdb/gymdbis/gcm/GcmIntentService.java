@@ -1,4 +1,4 @@
-package sk.gymdb.gymdbis;
+package sk.gymdb.gymdbis.gcm;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import sk.gymdb.gymdbis.MainActivity;
 
 /**
  * Created by Admin on 11/8/13.
