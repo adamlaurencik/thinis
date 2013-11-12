@@ -12,6 +12,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import sk.gymdb.gymdbis.news.NewsItem;
+import sk.gymdb.gymdbis.news.NewsService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +24,7 @@ import java.net.URLConnection;
 import java.util.LinkedHashSet;
 
 public class MainActivity extends ActionBarActivity {
-    Gymdb gymdb = new Gymdb();
+    NewsService newsService = new NewsService();
     Button button;
     int i = 0;
 
@@ -33,20 +35,20 @@ public class MainActivity extends ActionBarActivity {
         button = (Button) findViewById(R.id.newsText);
         View newsView = (View) findViewById(R.id.newsText);
         DataDownloader downloader = new DataDownloader();
-        downloader.execute("http://www.gymdb.sk/aktuality.html?page_id=118");
+        downloader.execute("http://www.newsService.sk/aktuality.html?page_id=118");
         newsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (i < gymdb.getNews().size() - 1) {
+                if (i < newsService.getNews().size() - 1) {
                     i = i + 1;
                 } else {
                     i = 0;
                 }
-                if (gymdb.getNoticeById(i).getTitle().length() > 80) {
-                    String title = gymdb.getNoticeById(i).getTitle().substring(0, 77) + "...";
+                if (newsService.getNewsItemById(i).getTitle().length() > 80) {
+                    String title = newsService.getNewsItemById(i).getTitle().substring(0, 77) + "...";
                     button.setText(Html.fromHtml("<b>" + title + "</b>"));
                 } else
-                    button.setText(gymdb.getNoticeById(i).getHtmlString());
+                    button.setText(newsService.getNewsItemById(i).getHtmlString());
 
             }
         });
@@ -74,13 +76,13 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class DataDownloader extends AsyncTask<String, Void, LinkedHashSet<Notice>> {
+    public class DataDownloader extends AsyncTask<String, Void, LinkedHashSet<NewsItem>> {
 
         @Override
-        protected LinkedHashSet<Notice> doInBackground(String... strings) {
+        protected LinkedHashSet<NewsItem> doInBackground(String... strings) {
             publishProgress();
             URL url = null;
-            Gymdb help = new Gymdb();
+            NewsService help = new NewsService();
             try {
 
                 url = new URL(strings[0]);
@@ -98,11 +100,11 @@ public class MainActivity extends ActionBarActivity {
                 Document doc = Jsoup.parse(html);
                 Elements news = doc.select("div[class=articlebox]");
                 for (int i = 0; i < news.size(); i++) {
-                    Notice notice = new Notice();
+                    NewsItem newsItem = new NewsItem();
                     Element announcement = doc.select("div[class=articlebox]").get(i);
-                    notice.setTitle(announcement.select("h2").text());
-                    notice.setMessage(announcement.select("div[class=gray]").text());
-                    help.addNotice(notice);
+                    newsItem.setTitle(announcement.select("h2").text());
+                    newsItem.setMessage(announcement.select("div[class=gray]").text());
+                    help.addNewsItem(newsItem);
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -113,13 +115,13 @@ public class MainActivity extends ActionBarActivity {
         }
 
         @Override
-        protected void onPostExecute(LinkedHashSet<Notice> notices) {
-            gymdb.setNews(notices);
-            if (gymdb.getNoticeById(i).getTitle().length() > 80) {
-                String title = gymdb.getNoticeById(i).getTitle().substring(0, 77) + "...";
+        protected void onPostExecute(LinkedHashSet<NewsItem> newsItems) {
+            newsService.setNews(newsItems);
+            if (newsService.getNewsItemById(i).getTitle().length() > 80) {
+                String title = newsService.getNewsItemById(i).getTitle().substring(0, 77) + "...";
                 button.setText(Html.fromHtml("<b>" + title + "</b>"));
             } else
-                button.setText(gymdb.getNoticeById(i).getHtmlString());
+                button.setText(newsService.getNewsItemById(i).getHtmlString());
 
         }
 
