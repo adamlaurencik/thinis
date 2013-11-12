@@ -34,6 +34,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         button = (Button) findViewById(R.id.newsText);
         View newsView = (View) findViewById(R.id.newsText);
+
         DataDownloader downloader = new DataDownloader();
         downloader.execute("http://www.newsService.sk/aktuality.html?page_id=118");
         newsView.setOnClickListener(new View.OnClickListener() {
