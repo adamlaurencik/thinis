@@ -1,4 +1,4 @@
-package sk.gymdb.gymdbis.news;
+package sk.gymdb.thinis.news;
 
 /**
  * Created by Admin on 10/26/13.

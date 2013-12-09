@@ -1,6 +1,4 @@
-package sk.gymdb.gymdbis.news;
-
-import sk.gymdb.gymdbis.news.NewsItem;
+package sk.gymdb.thinis.news;
 
 import java.util.HashSet;
 import java.util.Iterator;

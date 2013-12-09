@@ -1,4 +1,4 @@
-package sk.gymdb.gymdbis;
+package sk.gymdb.thinis;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,8 +12,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import sk.gymdb.gymdbis.news.NewsItem;
-import sk.gymdb.gymdbis.news.NewsService;
+import sk.gymdb.thinis.news.NewsItem;
+import sk.gymdb.thinis.news.NewsService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
