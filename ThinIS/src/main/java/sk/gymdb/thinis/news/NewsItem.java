@@ -12,8 +12,16 @@ public class NewsItem {
     private String message;
     private String title;
     private HashSet<String> images= new HashSet<String>();
+    private String Url;
     public NewsItem(){
 
+    }
+    public void setUrl(String url){
+        this.Url=url;
+    }
+    public String getUrl()
+    {
+        return this.Url;
     }
     public void setMessage(String message){
         this.message=message;

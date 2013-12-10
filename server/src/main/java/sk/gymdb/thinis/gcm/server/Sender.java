@@ -445,8 +445,6 @@ public class Sender {
       return multicastResult;
     } catch (ParseException e) {
       throw newIoException(responseBody, e);
-    } catch (CustomParserException e) {
-      throw newIoException(responseBody, e);
     }
   }
 

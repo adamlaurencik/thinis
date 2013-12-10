@@ -4,12 +4,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
-/**
- * Created by Admin on 10/26/13.
- */
 public class NewsService {
-
+    private static NewsService instance=null;
     private HashSet<NewsItem> news = new LinkedHashSet<NewsItem>();
+
+    public static NewsService getInstance(){
+        if(instance==null){
+            instance=new NewsService();
+        }
+        return instance;
+    }
 
     public void addNewsItem(NewsItem newsItem) {
         news.add(newsItem);
@@ -25,10 +29,14 @@ public class NewsService {
 
     public NewsItem getNewsItemById(int i) {
         Iterator<NewsItem> it = news.iterator();
-        NewsItem ret = it.next();
+        NewsItem ret=new NewsItem();
+       if(it.hasNext()) {
+            ret = it.next();
+
         for (int j = 0; j < i; j++) {
             ret = it.next();
         }
+       }
         return ret;
     }
 
