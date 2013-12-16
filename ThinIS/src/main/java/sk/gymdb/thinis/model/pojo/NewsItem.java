@@ -1,4 +1,4 @@
-package sk.gymdb.thinis.news;
+package sk.gymdb.thinis.model.pojo;
 
 /**
  * Created by Admin on 10/26/13.

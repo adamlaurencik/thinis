@@ -19,9 +19,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -39,47 +37,47 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
-import sk.gymdb.thinis.news.NewsItem;
-import sk.gymdb.thinis.news.NewsService;
+import sk.gymdb.thinis.model.dao.NewsDAO;
+import sk.gymdb.thinis.model.pojo.NewsItem;
 
 
 public class MainActivity extends Activity {
-    NewsService newsService =NewsService.getInstance();
+    NewsDAO newsService = NewsDAO.getInstance();
     Button button;
     int i = 0;
     float X;
-    Context context=this;
+    Context context = this;
     GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         button = (Button) findViewById(R.id.newsText);
-        View newsView = (View) findViewById(R.id.newsText);
+        View newsView = findViewById(R.id.newsText);
         DataDownloader downloader = new DataDownloader();
-         GcmRegister gcmRegister= new GcmRegister();
+        GcmRegister gcmRegister = new GcmRegister();
         downloader.execute("http://www.gymdb.sk");
         gcmRegister.execute();
         newsView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(newsService.getNews().size()>0){
-                    float distance=0;
-                    switch (event.getAction()){
+                if (newsService.getNews().size() > 0) {
+                    float distance;
+                    switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
-                            X=event.getX();
+                            X = event.getX();
                             break;
                         case MotionEvent.ACTION_UP:
-                            distance=event.getX()-X;
-                            if(Math.abs(distance)>30){
-                                if (distance>0){
-                                    if(i>0)i--;
+                            distance = event.getX() - X;
+                            if (Math.abs(distance) > 30) {
+                                if (distance > 0) {
+                                    if (i > 0) i--;
                                 }
-                                if(distance<0){
-                                    if(i<newsService.getNews().size()-1)i++;
+                                if (distance < 0) {
+                                    if (i < newsService.getNews().size() - 1) i++;
                                 }
 
                                 if (newsService.getNewsItemById(i).getTitle().length() > 80) {
@@ -87,11 +85,12 @@ public class MainActivity extends Activity {
                                     button.setText(Html.fromHtml("<b>" + title + "</b>"));
                                 } else
                                     button.setText(newsService.getNewsItemById(i).getHtmlString());
-                            }else {
-                                Intent intent=new Intent(context,NewsActivity.class);
-                                intent.putExtra("MESSAGE_ID",i);
+                            } else {
+                                Intent intent = new Intent(context, NewsActivity.class);
+                                intent.putExtra("MESSAGE_ID", i);
                                 startActivity(intent);
-                            }}
+                            }
+                    }
 
                 }
 
@@ -99,6 +98,7 @@ public class MainActivity extends Activity {
             }
         });
     }
+
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
@@ -112,6 +112,7 @@ public class MainActivity extends Activity {
         }
         return true;
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -119,6 +120,7 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -130,40 +132,43 @@ public class MainActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-    public class GcmRegister extends AsyncTask<String, Void, String>{
-    String message;
-    protected String doInBackground(String...strings){
-        String regId="";
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        if(sharedPref.contains("REGID")){
-            regId=sharedPref.getString("REGID","");
-            message="Already registered";
-        } else {
-            if (checkPlayServices()){
 
-                while (regId.equals("")){
-                    try {
-                        regId=gcm.register("1045030114303");
-                        sendRegId(regId);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+    public class GcmRegister extends AsyncTask<String, Void, String> {
+        String message;
+
+        protected String doInBackground(String... strings) {
+            String regId = "";
+            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            if (sharedPref.contains("REGID")) {
+                regId = sharedPref.getString("REGID", "");
+                message = "Already registered";
+            } else {
+                if (checkPlayServices()) {
+
+                    while (regId.equals("")) {
+                        try {
+                            regId = gcm.register("1045030114303");
+                            sendRegId(regId);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+                editor.putString("REGID", regId);
+                editor.commit();
+                message = "Registered now";
+                Log.e("REGISTRATION", regId);
+
             }
-            editor.putString("REGID",regId);
-            editor.commit();
-            message="Registered now";
-            Log.e("REGISTRATION",regId);
+            sendRegId(regId);
+            return regId;
+        }
+
+        protected void onPostExecute(String regId) {
+            Toast.makeText(context, message + ": " + regId, Toast.LENGTH_LONG).show();
 
         }
-        sendRegId(regId);
-        return regId;
-    }
-       protected void onPostExecute(String regId){
-           Toast.makeText(context,message+": "+regId,Toast.LENGTH_LONG).show();
-
-       }
     }
 
     private void sendRegId(String regId) {
@@ -175,20 +180,19 @@ public class MainActivity extends Activity {
             nameValuePairs.add(new BasicNameValuePair("regId", regId));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             httpclient.execute(httppost);
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+        }catch (Exception ex) {
+            Toast.makeText(context, R.string.regid_registration_unsuccessful, Toast.LENGTH_LONG).show();
         }
     }
 
-    public class DataDownloader extends AsyncTask<String, Void, LinkedHashSet<NewsItem>> {
+    public class DataDownloader extends AsyncTask<String, Void, ArrayList<NewsItem>> {
 
         @Override
-        protected LinkedHashSet<NewsItem> doInBackground(String... strings) {
+        protected ArrayList<NewsItem> doInBackground(String... strings) {
             publishProgress();
             URL url;
-            NewsService help = new NewsService();
+            ArrayList<NewsItem> newsItems = new ArrayList<NewsItem>();
+
             try {
 
                 url = new URL(strings[0]);
@@ -196,7 +200,7 @@ public class MainActivity extends Activity {
                 spoof.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)");
                 BufferedReader in = new BufferedReader(new InputStreamReader(spoof.getInputStream()));
                 String strLine;
-                String webPage="";
+                String webPage = "";
 
                 //Loop through every line in the source
                 while ((strLine = in.readLine()) != null) {
@@ -210,20 +214,20 @@ public class MainActivity extends Activity {
                     Element announcement = doc.select("div[class=articlebox]").get(i);
                     newsItem.setTitle(announcement.select("h2").text());
                     newsItem.setMessage(announcement.select("div[class=gray]").text());
-                     String urll=announcement.select("a").attr("href");
+                    String urll = announcement.select("a").attr("href");
                     newsItem.setUrl(urll);
-                    help.addNewsItem(newsItem);
+                    newsItems.add(newsItem);
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return help.getNews();
+            return newsItems;
         }
 
         @Override
-        protected void onPostExecute(LinkedHashSet<NewsItem> newsItems) {
+        protected void onPostExecute(ArrayList<NewsItem> newsItems) {
             newsService.setNews(newsItems);
             if (newsService.getNewsItemById(i).getTitle().length() > 80) {
                 String title = newsService.getNewsItemById(i).getTitle().substring(0, 77) + "...";

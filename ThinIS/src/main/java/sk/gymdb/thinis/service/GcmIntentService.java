@@ -1,4 +1,4 @@
-package sk.gymdb.thinis.gcm;
+package sk.gymdb.thinis.service;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
