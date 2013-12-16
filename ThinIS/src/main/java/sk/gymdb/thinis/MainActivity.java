@@ -187,7 +187,7 @@ public class MainActivity extends Activity {
         @Override
         protected LinkedHashSet<NewsItem> doInBackground(String... strings) {
             publishProgress();
-            URL url = null;
+            URL url;
             NewsService help = new NewsService();
             try {
 
@@ -196,7 +196,7 @@ public class MainActivity extends Activity {
                 spoof.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT 5.0; H010818)");
                 BufferedReader in = new BufferedReader(new InputStreamReader(spoof.getInputStream()));
                 String strLine;
-                String webPage = "";
+                String webPage="";
 
                 //Loop through every line in the source
                 while ((strLine = in.readLine()) != null) {
