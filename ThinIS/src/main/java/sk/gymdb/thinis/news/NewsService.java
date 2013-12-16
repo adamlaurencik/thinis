@@ -1,6 +1,5 @@
 package sk.gymdb.thinis.news;
 
-import android.content.res.TypedArray;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -19,10 +18,6 @@ public class NewsService implements Parcelable {
         return instance;
     }
     public NewsService(){}
-    public NewsService (Parcel in){
-        TypedArray data= new TypedArray();
-       in.readTypedArray(data,CREATOR,);
-    }
 
     public void addNewsItem(NewsItem newsItem) {
         news.add(newsItem);
@@ -60,7 +55,7 @@ public class NewsService implements Parcelable {
     }
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public NewsService createFromParcel(Parcel in) {
-            return new NewsService(in);
+            return new NewsService();
         }
 
         public NewsService[] newArray(int size) {

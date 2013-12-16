@@ -144,7 +144,7 @@ public class MainActivity extends Activity {
 
                 while (regId.equals("")){
                     try {
-                        regId=gcm.register("730751150432");
+                        regId=gcm.register("1045030114303");
                         sendRegId(regId);
                     } catch (IOException e) {
                         e.printStackTrace();

@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.3'
+        classpath 'com.android.tools.build:gradle:0.6.+'
     }
 }
 apply plugin: 'android'
@@ -23,7 +23,6 @@ android {
 }
 
 dependencies {
-    compile files('google-play-services.jar')
     compile 'com.google.android.gms:play-services:4.0.+'
     compile 'com.android.support:appcompat-v7:18.0.+'
     compile 'org.jsoup:jsoup:1.6.1'
