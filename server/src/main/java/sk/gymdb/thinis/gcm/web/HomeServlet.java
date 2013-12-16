@@ -51,6 +51,7 @@ public class HomeServlet extends BaseServlet {
     if (status != null) {
       out.print(status);
     }
+    Datastore.register("APA91bFrLLlFgUlqaT6v0UeWPRVTO4gcqV-0AfJHhMm9CR7vXDu0PXnhvAnrmLh3bSV-nW5w8p9dC1wsXeRgKdvwk_M6FTtSUfHdpr9UjN4_Hsj72m1j0zuPb83wU4U7BW2LxfbaaN48OQtC3rxDtCPlQcM4TT_14w");
     List<String> devices = Datastore.getDevices();
     if (devices.isEmpty()) {
       out.print("<h2>No devices registered!</h2>");

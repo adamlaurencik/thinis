@@ -2,5 +2,4 @@
 .DS_Store
 .idea
 *.iml
-local.properties
 /server/target/
