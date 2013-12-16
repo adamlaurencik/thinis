@@ -78,7 +78,7 @@ public class SendAllMessagesServlet extends BaseServlet {
         // send a single message using plain post
         String registrationId = devices.get(0);
         Message message = new Message.Builder().build();
-        Result result = sender.send(message, registrationId, 5);
+        Result result = sender.send(message, registrationId, 10);
         status = "Sent message to one device: " + result;
       } else {
         // send a multicast message using JSON

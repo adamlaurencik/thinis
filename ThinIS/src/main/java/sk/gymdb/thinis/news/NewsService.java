@@ -1,10 +1,14 @@
 package sk.gymdb.thinis.news;
 
+import android.content.res.TypedArray;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
-public class NewsService {
+public class NewsService implements Parcelable {
     private static NewsService instance=null;
     private HashSet<NewsItem> news = new LinkedHashSet<NewsItem>();
 
@@ -13,6 +17,11 @@ public class NewsService {
             instance=new NewsService();
         }
         return instance;
+    }
+    public NewsService(){}
+    public NewsService (Parcel in){
+        TypedArray data= new TypedArray();
+       in.readTypedArray(data,CREATOR,);
     }
 
     public void addNewsItem(NewsItem newsItem) {
@@ -40,4 +49,22 @@ public class NewsService {
         return ret;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedArray((Parcelable[]) news.toArray(),0);
+    }
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public NewsService createFromParcel(Parcel in) {
+            return new NewsService(in);
+        }
+
+        public NewsService[] newArray(int size) {
+            return new NewsService[size];
+        }
+    };
 }
