@@ -37,7 +37,7 @@ public class MKActivity extends Activity {
     private static final String PROPERTY_REG_ID = "REGID";
     private static final String PROPERTY_APP_VERSION = "1";
     private static final String SENDER_ID = "1045030114303";
-    public static final String HTTP_SERVER_ADDRESS = "http://192.168.1.17:8080/ThinIS-GCM-Server/register";
+    public static final String HTTP_SERVER_ADDRESS = "http://192.168.1.17:8084/ThinIS-GCM-Server/register";
 
     private Context context;
     private GoogleCloudMessaging gcm;

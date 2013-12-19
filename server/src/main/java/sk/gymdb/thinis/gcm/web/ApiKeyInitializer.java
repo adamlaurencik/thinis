@@ -34,7 +34,7 @@ public class ApiKeyInitializer implements ServletContextListener {
 
   static final String ATTRIBUTE_ACCESS_KEY = "apiKey";
 
-  private static final String PATH = "/api.key";
+  private static final String PATH = "api.key";
 
   private final Logger logger = Logger.getLogger(getClass().getName());
 
