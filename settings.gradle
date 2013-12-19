@@ -1,2 +1,3 @@
-include 'ThinIS'
-include 'gcm-client'
+include ':ThinIS'
+include ':server'
+include ':gcm-client'
