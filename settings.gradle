@@ -1,1 +1,2 @@
 include 'ThinIS'
+include 'gcm-client'
