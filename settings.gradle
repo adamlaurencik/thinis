@@ -1,3 +1,6 @@
 include ':ThinIS'
 include ':server'
 include ':gcm-client'
+include ':gcm-demo-client'
+include ':gcm-server'
+include ':gcm-demo-server'
