@@ -9,6 +9,8 @@ package sk.gymdb.thinis.gcm;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import sk.gymdb.thinis.gcm.substitutions.SubstitutionNotificator;
+
 /**
  * @author Admin
  * @modified matejkobza on 21.12.2013.
