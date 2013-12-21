@@ -24,39 +24,53 @@ public class Main implements Runnable {
 
     public void run() {
         System.out.println("Hello from a thread!");
-        while (true) {
-            Calendar cal = Calendar.getInstance();
-            cal.getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            if (sdf.format(cal.getTime()).equals("12:26")) {
-                try {
-                    URL yahoo = new URL("http://gymdb.edupage.org/substitution/?");
-                    URLConnection yc = yahoo.openConnection();
-                    BufferedReader in = new BufferedReader(new InputStreamReader(
-                            yc.getInputStream(), "UTF-8"));
-                    String inputLine;
-                    StringBuilder a = new StringBuilder();
-                    while ((inputLine = in.readLine()) != null)
-                        a.append(inputLine);
-                    in.close();
-                    String source = a.toString();
-                    System.out.println("PRAVE SOM PRECITAL STRANKU");
-                    Thread.sleep(60000);
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+
+        checkURL();
+    }
+
+    private void checkURL() {
+        URL url = null;
+        try {
+            url = new URL("http://gymdb.edupage.org/substitution/?");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
+
+        URLConnection urlConnection = null;
+        BufferedReader in = null;
+        String inputLine;
+        StringBuilder a = new StringBuilder();
+
+        try {
+            urlConnection = url.openConnection();
+            in = new BufferedReader(new InputStreamReader(
+                    urlConnection.getInputStream(), "UTF-8"));
+            while ((inputLine = in.readLine()) != null)
+                a.append(inputLine);
+            in.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String source = a.toString();
+
+        System.out.println("PRAVE SOM PRECITAL STRANKU");
     }
 
     public static void main(String args[]) {
         Thread t = new Thread(new Main());
 
-        t.start();
+        while (true) {
+            Calendar cal = Calendar.getInstance();
+            cal.getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("mm");
+            if (sdf.format(cal.getTime()).equals("00")) {
+                if (!t.isAlive()) {
+                    t.interrupt();
+                }
+                t.start();
+            }
+        }
     }
 
 }
