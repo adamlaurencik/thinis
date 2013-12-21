@@ -1,12 +1,17 @@
 package sk.gymdb.thinis;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,9 +40,9 @@ public class MKActivity extends Activity {
     private static final String TAG = "MKActivity";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String PROPERTY_REG_ID = "REGID";
-    private static final String PROPERTY_APP_VERSION = "1";
+    private static final String PROPERTY_APP_VERSION = "2";
     private static final String SENDER_ID = "1045030114303";
-    public static final String HTTP_SERVER_ADDRESS = "http://192.168.1.17:8084/ThinIS-GCM-Server/register";
+    public static final String HTTP_SERVER_ADDRESS = "http://192.168.2.54:8084/ThinIS-GCM-Server/register";
 
     private Context context;
     private GoogleCloudMessaging gcm;
@@ -53,10 +58,7 @@ public class MKActivity extends Activity {
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
             regId = getRegistrationId(context);
-
-            if (regId.isEmpty()) {
                 registerInBackground();
-            }
         } else {
             Toast.makeText(context, R.string.play_services_not_available, Toast.LENGTH_SHORT).show();
         }
@@ -217,6 +219,20 @@ public class MKActivity extends Activity {
         protected void onPostExecute(Object o) {
             Toast.makeText(context, o.toString(), Toast.LENGTH_SHORT).show();
 //                mDisplay.append(msg + "\n");
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
+                    new Intent(context, MKActivity.class), 0);
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(context)
+                            .setSmallIcon(0)
+                            .setContentTitle("My notification")
+                            .setContentText("Hello World!");
+            mBuilder.setContentIntent(contentIntent);
+            mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+            mBuilder.setAutoCancel(true);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(1, mBuilder.build());
+
         }
     }
 

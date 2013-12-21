@@ -13,7 +13,6 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import sk.gymdb.thinis.MKActivity;
-import sk.gymdb.thinis.MainActivity;
 import sk.gymdb.thinis.receivers.GcmBroadcastReceiver;
 
 /**
@@ -22,9 +21,9 @@ import sk.gymdb.thinis.receivers.GcmBroadcastReceiver;
 public class GcmIntentService extends IntentService {
 
     private static final String TAG = "GcmIntentService";
-
     public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
+    private Context context=this;
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -87,7 +86,7 @@ public class GcmIntentService extends IntentService {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-//                        .setSmallIcon(R.drawable.ic_stat_gcm)
+                      .setSmallIcon(sk.gymdb.thinis.R.drawable.suplovanie)
                         .setContentTitle("GCM Notification")
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
@@ -95,5 +94,6 @@ public class GcmIntentService extends IntentService {
 
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+
     }
 }

@@ -77,7 +77,9 @@ public class SendAllMessagesServlet extends BaseServlet {
       if (devices.size() == 1) {
         // send a single message using plain post
         String registrationId = devices.get(0);
-        Message message = new Message.Builder().build();
+        Message.Builder builder=new Message.Builder();
+        builder.addData("SPRAVA", "TOTO SA MUSI ZOBRAZIT");
+        Message message = builder.build();
         Result result = sender.send(message, registrationId, 5);
         status = "Sent message to one device: " + result;
       } else {
