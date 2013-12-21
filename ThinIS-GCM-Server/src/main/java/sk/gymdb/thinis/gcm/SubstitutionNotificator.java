@@ -1,10 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package sk.gymdb.thinis.gcm.web;
+package sk.gymdb.thinis.gcm;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,21 +6,11 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * @author Admin
+ * Created by matejkobza on 21.12.2013.
  */
-public class Main implements Runnable {
-
-    public void run() {
-        System.out.println("Hello from a thread!");
-
-        checkURL();
-    }
+public class SubstitutionNotificator implements Runnable {
 
     private void checkURL() {
         URL url = null;
@@ -57,20 +41,11 @@ public class Main implements Runnable {
         System.out.println("PRAVE SOM PRECITAL STRANKU");
     }
 
-    public static void main(String args[]) {
-        Thread t = new Thread(new Main());
 
-        while (true) {
-            Calendar cal = Calendar.getInstance();
-            cal.getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat("mm");
-            if (sdf.format(cal.getTime()).equals("00")) {
-                if (!t.isAlive()) {
-                    t.interrupt();
-                }
-                t.start();
-            }
-        }
+    @Override
+    public void run() {
+        System.out.println("Hello from a thread!");
+
+        checkURL();
     }
-
 }
