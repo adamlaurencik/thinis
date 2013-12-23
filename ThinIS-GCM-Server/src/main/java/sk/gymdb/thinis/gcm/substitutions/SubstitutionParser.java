@@ -7,9 +7,12 @@ package sk.gymdb.thinis.gcm.substitutions;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
@@ -42,29 +45,17 @@ public class SubstitutionParser {
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
-        HttpPost httpost = new HttpPost("http://gymdb.edupage.org/substitution/gcall");
+        // first load phpsesssionid
+        HttpGet httpGet = new HttpGet("http://gymdb.edupage.org");
 
-
-        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair("IDToken1", "username"));
-        nvps.add(new BasicNameValuePair("IDToken2", "password"));
-
-        try {
-            httpost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-        } catch (UnsupportedEncodingException e) {
-
-            e.printStackTrace();
-        }
-
-        HttpResponse response = null;
-        response = httpClient.execute(httpost);
+        HttpResponse response = httpClient.execute(httpGet);
         HttpEntity entity = response.getEntity();
 
+        System.out.println("Login form get: " + response.getStatusLine());
         if (entity != null) {
             entity.consumeContent();
         }
-
-        System.out.println("Post logon cookies:");
+        System.out.println("Initial set of cookies:");
         List<Cookie> cookies = httpClient.getCookieStore().getCookies();
         if (cookies.isEmpty()) {
             System.out.println("None");
@@ -74,19 +65,73 @@ public class SubstitutionParser {
             }
         }
 
-        BufferedReader rd = new BufferedReader(new InputStreamReader(entity.getContent()));
-        String line;
-        StringBuffer response1 = new StringBuffer();
-        while ((line = rd.readLine()) != null) {
-            response1.append(line);
-            response1.append("\r");
-        }
-        rd.close();
 
-        System.out.println("Output:" + response1.toString());
+        HttpPost httpPost = new HttpPost("http://gymdb.edupage.org/substitution/gcall");
+        ResponseHandler<String> responseHandler = new BasicResponseHandler();
 
+        List <NameValuePair> nvps = new ArrayList <NameValuePair>();
+        nvps.add(new BasicNameValuePair("IDToken1", "username"));
+        nvps.add(new BasicNameValuePair("IDToken2", "password"));
+
+        httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+
+
+        String response1 = httpClient.execute(httpPost, responseHandler);
+
+        System.out.println(response1);
+//        entity = response1.getEntity();
+
+//        System.out.println("Login form get: " + response.getStatusLine());
+//        if (entity != null) {
+//            entity.consumeContent();
+//        }
+//
+//        System.out.println("Post logon cookies:");
+//        cookies = httpClient.getCookieStore().getCookies();
+//        if (cookies.isEmpty()) {
+//            System.out.println("None");
+//        } else {
+//            for (int i = 0; i < cookies.size(); i++) {
+//                System.out.println("- " + cookies.get(i).toString());
+//            }
+//        }
+
+        // When HttpClient instance is no longer needed,
+        // shut down the connection manager to ensure
+        // immediate deallocation of all system resources
         httpClient.getConnectionManager().shutdown();
 
+//        HttpEntity entity = response.getEntity();
+//
+//        if (entity != null) {
+//            entity.consumeContent();
+//        }
+//
+//        System.out.println("Post logon cookies:");
+//        List<Cookie> cookies = httpClient.getCookieStore().getCookies();
+//        if (cookies.isEmpty()) {
+//            System.out.println("None");
+//        } else {
+//            for (int i = 0; i < cookies.size(); i++) {
+//                System.out.println("- " + cookies.get(i).toString());
+//            }
+//        }
+
+//        entity.writeTo();
+
+//        InputStreamReader rd = new InputStreamReader(entity.getContent()));
+//        String line;
+//        StringBuffer response1 = new StringBuffer();
+//        while ((line = rd.readLine()) != null) {
+//            response1.append(line);
+//            response1.append("\r");
+//        }
+//        rd.close();
+//
+//        System.out.println("Output:" + response1.toString());
+//
+//        httpClient.getConnectionManager().shutdown();
+//
 
 //        URL url;
 //        HttpURLConnection connection = null;

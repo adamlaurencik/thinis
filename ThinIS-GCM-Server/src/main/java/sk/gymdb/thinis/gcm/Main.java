@@ -17,7 +17,7 @@ import sk.gymdb.thinis.gcm.substitutions.SubstitutionParser;
  */
 public class Main {
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
         Thread t = new Thread(new SubstitutionNotificator());
 
 //        while (true) {
@@ -32,11 +32,8 @@ public class Main {
 //         }
 
         SubstitutionParser parser = new SubstitutionParser();
-        try {
-            parser.getData();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        parser.getData();
+
     }
 }
 
