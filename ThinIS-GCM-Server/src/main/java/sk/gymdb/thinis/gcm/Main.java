@@ -32,7 +32,7 @@ public class Main {
 //         }
 
         SubstitutionParser parser = new SubstitutionParser();
-        parser.getData();
+        parser.getData1();
 
     }
 }

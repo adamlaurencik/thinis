@@ -18,9 +18,17 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +40,8 @@ public class SubstitutionParser {
 
     private static final String action = "switch";
     private static final String date = "2013-12-18";
-    private static final String gpid = "3454974";
-    private static final String gsh = "656a7f3b";
+    private static final String gpid = "3482531";
+    private static final String gsh = "1e17e815";
     private static final String __utmv = "182002547.edupage9; path=/";
     private static final String __utma = "182002547.1637320360.1387631395.1387631395.1387644012.2; path=/";
     private static final String __utmz = "182002547.1387631395.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); path=/";
@@ -191,5 +199,55 @@ public class SubstitutionParser {
 //                connection.disconnect();
 //            }
 //        }
+    }
+
+    public void getData1() throws IOException {
+        URL url;
+        url = new URL("http://gymdb.edupage.org/substitution/gcall");
+        String urlParameters
+                = "action=" + URLEncoder.encode(action, "UTF-8")
+                + "&date=" + URLEncoder.encode(date, "UTF-8")
+                + "&gpid=" + URLEncoder.encode(gpid, "UTF-8")
+                + "&gsh=" + URLEncoder.encode(gsh, "UTF-8");
+
+        URLConnection connection;
+        connection = url.openConnection();
+        HttpURLConnection httppost = (HttpURLConnection) connection;
+        httppost.setDoInput(true);
+        httppost.setDoOutput(true);
+        httppost.setRequestMethod("POST");
+        httppost.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        httppost.setRequestProperty("Accept-Encoding", "gzip, deflate");
+        httppost.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+        httppost.setRequestProperty("Content-Length", "" + urlParameters.getBytes().length);
+        httppost.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        httppost.setRequestProperty("Cookie", "__utma=182002547.1484286339.1384891623.1387628546.1387790890.3; __utmz=182002547.1384891623.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __utmv=182002547.edupage9; PHPSESSID=q4o2duq9c3dvtv4aes2c8kdrj1; __utmb=182002547.2.10.1387790890; __utmc=182002547");
+        httppost.setRequestProperty("Host", "gymdb.edupage.org");
+        httppost.setRequestProperty("Referer", "http://gymdb.edupage.org/substitution/?");
+        httppost.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:26.0) Gecko/20100101 Firefox/26.0");
+        httppost.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+
+
+        OutputStreamWriter writer = new OutputStreamWriter(httppost.getOutputStream());
+        writer.write(urlParameters); // bytes[] b of post data
+        writer.flush();
+        writer.close();
+
+        String reply;
+        InputStream in = httppost.getInputStream();
+        StringBuffer sb = new StringBuffer();
+        try {
+            int chr;
+            while ((chr = in.read()) != -1) {
+                sb.append((char) chr);
+            }
+            reply = sb.toString();
+        } finally {
+            in.close();
+        }
+
+        System.out.println("Response Message: " + httppost.getResponseMessage());
+        System.out.println("Content Length: " + httppost.getContentLength());
+        System.out.println(reply);
     }
 }
