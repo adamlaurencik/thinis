@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import sk.gymdb.thinis.gcm.substitutions.SubstitutionNotificator;
 import sk.gymdb.thinis.gcm.substitutions.SubstitutionParser;
+import sk.gymdb.thinis.gcm.substitutions.SubstitutionsHtmlParser;
 
 /**
  * @author Admin
@@ -17,7 +18,7 @@ import sk.gymdb.thinis.gcm.substitutions.SubstitutionParser;
  */
 public class Main {
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, Exception {
         Thread t = new Thread(new SubstitutionNotificator());
 
 //        while (true) {
@@ -31,8 +32,7 @@ public class Main {
 //         t.start();
 //         }
 
-        SubstitutionParser parser = new SubstitutionParser();
-        parser.getData1();
+        SubstitutionsHtmlParser parser = new SubstitutionsHtmlParser();
 
     }
 }
