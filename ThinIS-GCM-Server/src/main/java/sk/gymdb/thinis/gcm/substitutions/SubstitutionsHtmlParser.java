@@ -23,27 +23,27 @@ import static junit.framework.Assert.assertNotNull;
 public class SubstitutionsHtmlParser {
 
     public SubstitutionsHtmlParser() throws IOException{
-     final WebClient webClient = new WebClient(); 
-    final URL url; 
-        try {
-            url = new URL("http://htmlunit.sourceforge.net");
-    // Get the first page 
-    final HtmlPage page1 = (HtmlPage)webClient.getPage(url); 
-
-    HtmlAnchor anchor = page1.getAnchorByName("Home"); 
-    anchor.click(); 
-
-    HtmlAnchor anchor2 = page1.getAnchorByHref("http://some.url.com"); 
-    anchor2.click(); 
-
-    List allAnchors = page1.getAnchors(); 
-    for (Object oneAnchor : allAnchors) { 
-        // process, and click one of them here! 
-    }
-     } catch (MalformedURLException ex) {
-            Logger.getLogger(SubstitutionsHtmlParser.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println(ex.getMessage());
-        }
+//     final WebClient webClient = new WebClient(); 
+//    final URL url; 
+//        try {
+//            url = new URL("http://htmlunit.sourceforge.net");
+//    // Get the first page 
+//    final HtmlPage page1 = (HtmlPage)webClient.getPage(url); 
+//
+//    HtmlAnchor anchor = page1.getAnchorByName("Home"); 
+//    anchor.click(); 
+//
+//    HtmlAnchor anchor2 = page1.getAnchorByHref("http://some.url.com"); 
+//    anchor2.click(); 
+//
+//    List allAnchors = page1.getAnchors(); 
+//    for (Object oneAnchor : allAnchors) { 
+//        // process, and click one of them here! 
+//    }
+//     } catch (MalformedURLException ex) {
+//            Logger.getLogger(SubstitutionsHtmlParser.class.getName()).log(Level.SEVERE, null, ex);
+//            System.out.println(ex.getMessage());
+//        }
 
 }
 }

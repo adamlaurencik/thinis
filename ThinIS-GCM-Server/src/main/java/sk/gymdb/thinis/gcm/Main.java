@@ -19,7 +19,7 @@ import sk.gymdb.thinis.gcm.substitutions.SubstitutionsHtmlParser;
 public class Main {
 
     public static void main(String args[]) throws IOException, Exception {
-        Thread t = new Thread(new SubstitutionNotificator());
+//        Thread t = new Thread(new SubstitutionNotificator());
 
 //        while (true) {
 //         Calendar cal = Calendar.getInstance();
