@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import sk.gymdb.thinis.gcm.substitutions.SubstitutionsHtmlParser;
 
 /**
  * Servlet that adds display number of devices and button to send a message.
@@ -47,6 +48,8 @@ public class HomeServlet extends BaseServlet {
     out.print("  <title>GCM Demo</title>");
     out.print("  <link rel='icon' href='favicon.png'/>");
     out.print("</head>");
+    SubstitutionsHtmlParser parser = new SubstitutionsHtmlParser();
+    out.print(parser.parse());
     String status = (String) req.getAttribute(ATTRIBUTE_STATUS);
     if (status != null) {
       out.print(status);

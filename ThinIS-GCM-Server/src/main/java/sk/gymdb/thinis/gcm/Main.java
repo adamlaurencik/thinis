@@ -32,7 +32,7 @@ public class Main {
 //         t.start();
 //         }
 
-        SubstitutionsHtmlParser parser = new SubstitutionsHtmlParser();
+     SubstitutionsHtmlParser parser = new SubstitutionsHtmlParser();
 
     }
 }
