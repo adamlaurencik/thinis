@@ -15,13 +15,11 @@
  */
 package sk.gymdb.thinis.gcm.web;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import sk.gymdb.thinis.gcm.substitutions.SubstitutionsHtmlParser;
 
 /**
  * Servlet that adds display number of devices and button to send a message.
@@ -48,13 +46,11 @@ public class HomeServlet extends BaseServlet {
     out.print("  <title>GCM Demo</title>");
     out.print("  <link rel='icon' href='favicon.png'/>");
     out.print("</head>");
-    SubstitutionsHtmlParser parser = new SubstitutionsHtmlParser();
-    out.print(parser.parse());
     String status = (String) req.getAttribute(ATTRIBUTE_STATUS);
     if (status != null) {
       out.print(status);
     }
-//    Datastore.register("APA91bFrLLlFgUlqaT6v0UeWPRVTO4gcqV-0AfJHhMm9CR7vXDu0PXnhvAnrmLh3bSV-nW5w8p9dC1wsXeRgKdvwk_M6FTtSUfHdpr9UjN4_Hsj72m1j0zuPb83wU4U7BW2LxfbaaN48OQtC3rxDtCPlQcM4TT_14w");
+
     List<String> devices = Datastore.getDevices();
     if (devices.isEmpty()) {
       out.print("<h2>No devices registered!</h2>");
