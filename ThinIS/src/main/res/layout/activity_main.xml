@@ -13,8 +13,7 @@
             android:id="@+id/tableRow1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="openNews">
+            android:layout_weight="1">
 
             <Button
                 android:id="@+id/news"
