@@ -1,16 +1,20 @@
 package sk.gymdb.thinis;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
@@ -35,18 +39,19 @@ import java.util.List;
 /**
  * Created by matejkobza on 16.12.2013.
  */
-public class MKActivity extends Activity {
+public class MKActivity extends FragmentActivity {
 
     private static final String TAG = "MKActivity";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String PROPERTY_REG_ID = "REGID";
     private static final String PROPERTY_APP_VERSION = "2";
     private static final String SENDER_ID = "1045030114303";
-    public static final String HTTP_SERVER_ADDRESS = "http://192.168.2.54:8084/ThinIS-GCM-Server/register";
+    private static final String HTTP_SERVER_ADDRESS = "http://192.168.2.54:8084/ThinIS-GCM-Server/register";
 
     private Context context;
     private GoogleCloudMessaging gcm;
     private String regId;
+    private String clas;
 
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -70,7 +75,10 @@ public class MKActivity extends Activity {
             public void onClick(View v) {
                 registerInBackground();
             }
+
         });
+        DialogFragment fragment= new PickClassDialogFragment();
+        fragment.show(getSupportFragmentManager(), "classPicker");
     }
 
     @Override
@@ -93,9 +101,65 @@ public class MKActivity extends Activity {
         }
         return true;
     }
+    public class PickClassDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Ktorú triedu navštevuješ?")
+            .setItems(R.array.class_arrays, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                            clas="";
+                  switch (which){
+                      case 0: clas="I.A";
+                          break;
+                      case 1: clas="I.B";
+                          break;
+                      case 2: clas="II.A";
+                          break;
+                      case 3: clas="II.B";
+                          break;
+                      case 4: clas="II.C";
+                          break;
+                      case 5: clas="III.A";
+                          break;
+                      case 6: clas="III.B";
+                          break;
+                      case 7: clas="III.C";
+                          break;
+                      case 8: clas="IV.A";
+                          break;
+                      case 9: clas="IV.B";
+                          break;
+                      case 10: clas="IV.C";
+                          break;
+                      case 11: clas="I.PRIMA";
+                          break;
+                      case 12: clas="II.SEKUNDA";
+                          break;
+                      case 13: clas="III.TERCIA";
+                          break;
+                      case 14: clas="IV.KVARTA";
+                          break;
+                      case 15: clas="VI.SEXTA";
+                          break;
+                      case 16: clas="VII.SEPTIMA";
+                          break;
+                      case 17: clas="VIII.OKTAVA";
+                          break;
+                  }
+                    final SharedPreferences prefs = getPreferences();
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("CLASS", clas);
+                    editor.commit();
+                }
+            });
+            return builder.create();
+        }
+    }
 
     private String getRegistrationId(Context context) {
-        final SharedPreferences prefs = getGCMPreferences();
+        final SharedPreferences prefs = getPreferences();
         String registrationId = prefs.getString(PROPERTY_REG_ID, "");
         if (registrationId.isEmpty()) {
             Log.i(TAG, "Registration not found.");
@@ -113,7 +177,7 @@ public class MKActivity extends Activity {
         return registrationId;
     }
 
-    private SharedPreferences getGCMPreferences() {
+    private SharedPreferences getPreferences() {
         // This sample app persists the registration ID in shared preferences, but
         // how you store the regID in your app is up to you.
         return getSharedPreferences(MKActivity.class.getSimpleName(),
@@ -172,7 +236,7 @@ public class MKActivity extends Activity {
      * @param regId   registration ID
      */
     private void storeRegistrationId(Context context, String regId) {
-        final SharedPreferences prefs = getGCMPreferences();
+        final SharedPreferences prefs = getPreferences();
         int appVersion = getAppVersion(context);
         Log.i(TAG, "Saving regId on app version " + appVersion);
         SharedPreferences.Editor editor = prefs.edit();
