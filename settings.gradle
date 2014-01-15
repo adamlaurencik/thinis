@@ -1,1 +1,1 @@
-include ':ThinIS', ':ThinIS-GCM-Server'
+include ':ThinIS'

@@ -6,7 +6,7 @@
     android:debuggable="true">
 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="14"
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -26,7 +26,7 @@
         android:theme="@style/AppTheme">
         <receiver
             android:name=".gcm.receivers.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <category android:name="sk.gymdb.thinis" />
@@ -38,21 +38,29 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name="sk.gymdb.thinis.MKActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-            </activity>
+        <!-- Matej Kobza test activity -->
+        <activity
+            android:name="sk.gymdb.thinis.MKActivity"
+            android:label="@string/app_name" />
 
+        <!-- origin -->
         <activity
             android:name="sk.gymdb.thinis.MainActivity"
-            android:label="@string/app_name">
-        </activity>
-        <activity android:name="sk.gymdb.thinis.NewsActivity">
+            android:label="@string/app_name" />
 
+        <!-- Adams test activity -->
+        <activity android:name="sk.gymdb.thinis.NewsActivity"
+            android:label="@string/app_name"/>
+
+        <!-- current home activity -->
+        <activity android:name=".HomeActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
