@@ -1,4 +1,4 @@
-package sk.gymdb.thinis.receivers;
+package sk.gymdb.thinis.gcm.receivers;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
-import sk.gymdb.thinis.service.GcmIntentService;
+import sk.gymdb.thinis.gcm.service.GcmIntentService;
 
 /**
  * Created by matejkobza on 16.12.2013.

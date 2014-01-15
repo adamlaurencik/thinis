@@ -1,4 +1,4 @@
-package sk.gymdb.thinis.service;
+package sk.gymdb.thinis.gcm.service;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
@@ -13,7 +13,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import sk.gymdb.thinis.MKActivity;
-import sk.gymdb.thinis.receivers.GcmBroadcastReceiver;
+import sk.gymdb.thinis.gcm.receivers.GcmBroadcastReceiver;
 
 /**
  * Created by Admin on 11/25/13.

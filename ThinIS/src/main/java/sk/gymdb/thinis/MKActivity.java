@@ -106,8 +106,8 @@ public class MKActivity extends FragmentActivity {
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Ktorú triedu navštevuješ?")
-            .setItems(R.array.class_arrays, new DialogInterface.OnClickListener() {
+            builder.setTitle("Ktorú triedu navštevuješ?");
+            builder.setItems(R.array.clazz, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                             clas="";
                   switch (which){

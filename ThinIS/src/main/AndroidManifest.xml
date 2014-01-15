@@ -25,14 +25,14 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <receiver
-            android:name=".receivers.GcmBroadcastReceiver"
+            android:name=".gcm.receivers.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <category android:name="sk.gymdb.thinis" />
             </intent-filter>
         </receiver>
-        <service android:name=".service.GcmIntentService" />
+        <service android:name=".gcm.service.GcmIntentService" />
 
         <meta-data
             android:name="com.google.android.gms.version"

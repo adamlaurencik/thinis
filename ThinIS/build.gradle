@@ -30,4 +30,5 @@ dependencies {
     compile 'com.google.android.gms:play-services:4.0.+'
     compile 'com.android.support:appcompat-v7:18.0.+'
     compile 'org.jsoup:jsoup:1.6.1'
+    compile 'net.sourceforge.htmlunit:htmlunit:2.13'
 }

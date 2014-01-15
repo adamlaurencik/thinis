@@ -7,4 +7,14 @@
     <string name="regid_registration_unsuccessful">Unsuccessfull to register</string>
     <string name="play_services_not_available">Check for google play services. They are not available.</string>
 
+    <array name="clazz">
+        <item>Príma</item>
+        <item>Sekunda</item>
+        <item>Tercia</item>
+        <item>Kvarta</item>
+        <item>Kvinta</item>
+        <item>Sexta</item>
+        <item>Septima</item>
+        <item>Oktáva</item>
+    </array>
 </resources>

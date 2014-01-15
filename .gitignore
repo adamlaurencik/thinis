@@ -2,4 +2,5 @@
 .DS_Store
 .idea
 *.iml
-/server/target/
+libs
+/ThinIS-GCM-Server/target/
