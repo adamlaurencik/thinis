@@ -10,98 +10,147 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import sk.gymdb.thinis.gcm.GcmServiceException;
 import sk.gymdb.thinis.gcm.service.GcmService;
 
 /**
  * This is the Entry point for the application
+ *
  * @author matejkobza
  */
 public class MainActivity extends FragmentActivity {
 
     private static final String TAG = "MainActivity";
 
+    private int showDialogs = 0;
+
     @Override
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
-        boolean isProceedError = false;
+        setContentView(R.layout.activity_main);
 
-        // if there is no connection just skip all the steps bellow and continue
-        if (!isNetworkConnected()) {
+        checkNetworkConnection();
+
+        checkGcm();
+
+        checkCredentials();
+
+        checkClassSelected();
+    }
+
+    private void proceed() {
+        if (showDialogs == 0) {
+            Intent activityChangeIntent = new Intent(MainActivity.this, HomeActivity.class);
+            MainActivity.this.startActivity(activityChangeIntent);
+        } else {
+            Toast.makeText(getApplicationContext(), "Unable to proceed." , Toast.LENGTH_LONG);
+        }
+    }
+
+    private void checkNetworkConnection() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (ni == null) {
+            Log.e(TAG, "No internet connection");
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
             dialogBuilder.setMessage(getResources().getString(R.string.no_internet_connection));
             dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    showDialogs--;
                     proceed();
                 }
             });
+            showDialogs++;
             dialogBuilder.show();
-
-            // this might change in the future
-            Log.e(TAG, "No internet connection");
-            return;
-//            proceed();
         }
+    }
 
-        // check if is registered and if not, than register
+    /**
+     * check if is registered and if not, than register
+     */
+    private void checkGcm() {
         try {
             new GcmService(this);
         } catch (GcmServiceException ex) {
+            Log.e(TAG, "Gcm services unavailable");
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setTitle(R.string.gcm_service);
             dialog.setMessage(getResources().getString(R.string.gcm_service_error));
             dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    showDialogs--;
                     proceed();
                 }
             });
+            showDialogs++;
             dialog.show();
-            Log.e(TAG, "Gcm services unavailable");
-            return;
         }
+    }
 
-        // check if the user has filled username and password, if not ask for username and password
+    /**
+     * check if the user has filled username and password, if not ask for username and password
+     */
+    private void checkCredentials() {
+
         SharedPreferences prefs = this.getApplicationContext().getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
         if (prefs.getString("username", "").isEmpty() || prefs.getString("password", "").isEmpty()) {
             Log.i(TAG, "None credentials found");
-            Intent activityChangeIntent = new Intent(MainActivity.this, LoginActivity.class);
-            MainActivity.this.startActivity(activityChangeIntent);
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(R.string.credentials);
+            dialog.setMessage(R.string.no_credentials_found);
+            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent activityChangeIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    MainActivity.this.startActivity(activityChangeIntent);
+                }
+            });
+            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    showDialogs--;
+                    proceed();
+                }
+            });
+            showDialogs++;
+            dialog.show();
         }
+    }
 
-        // check if the user has filled his class
-//        if (prefs.getString("clazz", "").isEmpty()) {
-//            Log.i(TAG, "No class selected");
-//            Intent activityChangeIntent = new Intent(MainActivity.this, SettingsActivity.class);
-//            MainActivity.this.startActivity(activityChangeIntent);
-//        }
+    /**
+     * there is a problem, with settings activity not sure why
+     */
+    private void checkClassSelected() {
 
-        if (!isProceedError) {
-            proceed();
+        SharedPreferences prefs = this.getApplicationContext().getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
+        if (prefs.getString("clazz", "").isEmpty()) {
+            Log.i(TAG, "No class selected");
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(R.string.no_class);
+            dialog.setMessage(R.string.no_class_selected);
+            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent activityChangeIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                    MainActivity.this.startActivity(activityChangeIntent);
+                }
+            });
+            dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    showDialogs--;
+                    proceed();
+                }
+            });
+            showDialogs++;
+            dialog.show();
         }
-
     }
 
-    private void proceed() {
-        Intent activityChangeIntent = new Intent(MainActivity.this, HomeActivity.class);
-
-        // currentContext.startActivity(activityChangeIntent);
-
-        MainActivity.this.startActivity(activityChangeIntent);
-
-    }
-
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (ni == null) {
-            // There are no active networks.
-            return false;
-        } else
-            return true;
-    }
 
 //    NewsDAO newsService = NewsDAO.getInstance();
 //    Button button;
@@ -113,7 +162,7 @@ public class MainActivity extends FragmentActivity {
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main_old);
 //        button = (Button) findViewById(R.id.newsText);
 //        View newsView = findViewById(R.id.newsText);
 //        DataDownloader downloader = new DataDownloader();

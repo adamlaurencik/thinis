@@ -1,110 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
 
-    <TableLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:background="#ff6a27">
+
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity"
-        tools:ignore="MergeRootFrame"
-        android:id="@+id/tableLayout1">
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/budova"
+        android:baselineAlignBottom="false"
+        android:adjustViewBounds="true" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/app_name"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.1"
+        android:paddingTop="15dp"
+        android:textAlignment="center"
+        android:enabled="true"
+        android:focusable="false"
+        android:gravity="center"
+        android:textSize="@dimen/intro_text"/>
 
-        <TableRow
-            android:id="@+id/tableRow1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/news"
-                android:layout_width="0dip"
-                android:layout_height="fill_parent"
-                android:layout_weight="4"
-                android:singleLine="false"
-                android:background="@drawable/oznamy" />
-
-
-            <Button
-                android:id="@+id/newsText"
-                android:layout_width="0dip"
-                android:layout_height="fill_parent"
-                android:layout_weight="6"
-
-                android:layout_margin="5dp"
-                android:background="@drawable/text"
-                android:textColor="#fbff6e"
-                android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                android:padding="10dp" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1" >
-
-            <Button
-                android:id="@+id/timetable"
-                android:layout_width="0dip"
-                android:layout_height="fill_parent"
-                android:layout_weight="4"
-
-                android:enabled="false"
-                android:clickable="true"
-                android:background="@drawable/rozvrh" />
-
-            <Button
-                android:id="@+id/timetableText"
-                android:layout_width="0dip"
-                android:layout_height="fill_parent"
-                android:layout_weight="6"
-
-                android:layout_margin="5dp"
-                android:background="@drawable/text" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow3"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1" >
-
-            <Button
-                android:id="@+id/substitution"
-                android:layout_width="0dip"
-                android:layout_height="fill_parent"
-                android:layout_weight="4"
-                android:background="@drawable/suplovanie" />
-
-
-            <Button
-                android:id="@+id/substitutionText"
-                android:layout_width="0dip"
-                android:layout_height="fill_parent"
-                android:layout_weight="6"
-
-                android:layout_margin="5dp"
-                android:background="@drawable/text" />
-        </TableRow>
-        <TableRow
-            android:id="@+id/tableRow4"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1" >
-
-            <Button
-                android:id="@+id/homework"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_weight="4" />
-
-            <Button
-                android:id="@+id/homeworkText"
-                android:layout_width="0dip"
-                android:layout_height="fill_parent"
-                android:layout_weight="6"
-
-                android:layout_margin="5dp"
-                android:background="@drawable/text" />
-        </TableRow>
-    </TableLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/credits"
+        android:id="@+id/textView2"
+        android:layout_gravity="center_horizontal" />
+</LinearLayout>
