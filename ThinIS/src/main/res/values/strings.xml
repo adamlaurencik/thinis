@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">GymdbIs</string>
-    <string name="credits">Creted by Adam Laurenčík</string>
+    <string name="credits">Created by Adam Laurenčík</string>
 
     <string name="action_settings">Settings</string>
     <string name="regid_registration_unsuccessful">Registrácia zariadenia neúspešná</string>

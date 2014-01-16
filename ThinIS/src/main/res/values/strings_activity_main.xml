@@ -2,7 +2,7 @@
 <resources>
     <string name="gcm_service">Push notifikácie</string>
     <string name="gcm_service_error">Push notifikácie zaznamenali chybu. Pravdepodobne nebudete dostávať informácie o suplovaní.</string>
-    <string name="no_internet_connection">Nie je dostupné internetové pripojenie. Skontrolujte, či ste pripojení do internetu.</string>
+    <string name="no_internet_connection">Nie je dostupné internetové pripojenie. Skontrolujte, či ste pripojení na internet.</string>
     <string name="credentials">Prihlasovacie údaje</string>
     <string name="no_credentials_found">Nenašli sa vaše prihlasovacie údaje. Chcete ich zadať?</string>
     <string name="no_class">Výber triedy</string>
