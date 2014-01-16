@@ -20,11 +20,11 @@ import sk.gymdb.thinis.adapter.TabsPagerAdapter;
  */
 public class HomeActivity extends FragmentActivity implements ActionBar.TabListener {
 
+
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
     private Resources res;
-    // Tab titles
     private String[] tabs;
     private Menu actionBarMenu;
 
@@ -70,6 +70,9 @@ public class HomeActivity extends FragmentActivity implements ActionBar.TabListe
             public void onPageScrollStateChanged(int arg0) {
             }
         });
+
+
+
     }
 
     @Override

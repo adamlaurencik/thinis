@@ -1,21 +1,13 @@
-package sk.gymdb.thinis;
+package sk.gymdb.thinis.gcm.service;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -29,83 +21,81 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
+import sk.gymdb.thinis.gcm.GcmServiceException;
 
 /**
- * Created by matejkobza on 16.12.2013.
+ * Created by matejkobza on 15.1.2014.
  */
-@Deprecated
-public class MKActivity extends FragmentActivity {
+public class GcmService {
 
-    private static final String TAG = "MKActivity";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String TAG = "GcmService";
     private static final String PROPERTY_REG_ID = "REGID";
-    private static final String PROPERTY_APP_VERSION = "2";
-    private static final String SENDER_ID = "1045030114303";
-    private static final String HTTP_SERVER_ADDRESS = "http://192.168.2.54:8084/ThinIS-GCM-Server/register";
+    private static final String PROPERTY_APP_VERSION = "1";
+//    private static final String SENDER_ID = "1045030114303";
+//    private static final String HTTP_SERVER_ADDRESS = "http://192.168.2.54:8084/ThinIS-GCM-Server/register";
 
+    private String senderId;
+    private String serverUrl;
     private Context context;
     private GoogleCloudMessaging gcm;
     private String regId;
-    private String clas;
-
-    public void onCreate(Bundle savedState) {
-        super.onCreate(savedState);
-        setContentView(R.layout.mk);
 
 
-        context = getApplicationContext();
+    public GcmService(FragmentActivity caller) throws GcmServiceException {
+        context = caller.getApplicationContext();
 
-        if (checkPlayServices()) {
-            gcm = GoogleCloudMessaging.getInstance(this);
-            regId = getRegistrationId(context);
-                registerInBackground();
-        } else {
-            Toast.makeText(context, R.string.play_services_not_available, Toast.LENGTH_SHORT).show();
+        Properties properties = new Properties();
+        try {
+            // this is not working dont know why
+            InputStream inputStream = context.getResources().getAssets().open("application.properties");
+            properties.load(inputStream);
+        } catch (IOException e) {
+            throw new GcmServiceException(e);
         }
 
-        Button button = (Button)findViewById(R.id.register);
+        this.senderId = properties.getProperty("sender.id");
+        this.serverUrl = properties.getProperty("server.url");
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (GcmService.checkPlayServices(caller)) {
+            gcm = GoogleCloudMessaging.getInstance(caller);
+            regId = getRegistrationId(context);
+
+            if (regId == null) {
                 registerInBackground();
             }
-
-        });
-//        DialogFragment fragment= new PickClassDialogFragment();
-//        fragment.show(getSupportFragmentManager(), "classPicker");
+        } else {
+            throw new GcmServiceException("Google play services unavailable.");
+        }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        checkPlayServices();
-    }
-
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+    /* GCM */
+    public static boolean checkPlayServices(Activity activity) throws GcmServiceException {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                GooglePlayServicesUtil.getErrorDialog(resultCode, activity,
                         PLAY_SERVICES_RESOLUTION_REQUEST).show();
             } else {
-                Log.i(TAG, "This device is not supported.");
-                finish();
+                throw new GcmServiceException("This device is not supported");
             }
             return false;
         }
         return true;
     }
 
-
-    private String getRegistrationId(Context context) {
+    private String getRegistrationId(Context context) throws GcmServiceException {
         final SharedPreferences prefs = getPreferences();
         String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+
         if (registrationId.isEmpty()) {
             Log.i(TAG, "Registration not found.");
-            return "";
+            return null;
         }
         // Check if app was updated; if so, it must clear the registration ID
         // since the existing regID is not guaranteed to work with the new
@@ -113,20 +103,20 @@ public class MKActivity extends FragmentActivity {
         int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
         int currentVersion = getAppVersion(context);
         if (registeredVersion != currentVersion) {
-            Log.i(TAG, "App version changed.");
-            return "";
+            throw new GcmServiceException("App version changed");
         }
+
         return registrationId;
     }
 
     private SharedPreferences getPreferences() {
         // This sample app persists the registration ID in shared preferences, but
         // how you store the regID in your app is up to you.
-        return getSharedPreferences(MKActivity.class.getSimpleName(),
+        return context.getSharedPreferences("APPLICATION",
                 Context.MODE_PRIVATE);
     }
 
-    private static int getAppVersion(Context context) {
+    private static int getAppVersion(Context context) throws GcmServiceException {
         try {
             PackageInfo packageInfo;
             packageInfo = context.getPackageManager()
@@ -134,7 +124,7 @@ public class MKActivity extends FragmentActivity {
             return packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
+            throw new GcmServiceException("Could not get package name: " + e);
         }
     }
 
@@ -155,9 +145,9 @@ public class MKActivity extends FragmentActivity {
      * device sends upstream messages to a server that echoes back the message
      * using the 'from' address in the message.
      */
-    private void sendRegistrationIdToBackend() {
+    private void sendRegistrationIdToBackend() throws GcmServiceException {
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(HTTP_SERVER_ADDRESS);
+        HttpPost httppost = new HttpPost(serverUrl);
 
         try {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -165,8 +155,7 @@ public class MKActivity extends FragmentActivity {
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             httpclient.execute(httppost);
         } catch (Exception ex) {
-//            Toast.makeText(context, R.string.regid_registration_unsuccessful, Toast.LENGTH_LONG).show();
-            Log.e(TAG, ex.getLocalizedMessage());
+            throw new GcmServiceException(ex);
         }
     }
 
@@ -177,7 +166,7 @@ public class MKActivity extends FragmentActivity {
      * @param context application's context.
      * @param regId   registration ID
      */
-    private void storeRegistrationId(Context context, String regId) {
+    private void storeRegistrationId(Context context, String regId) throws GcmServiceException {
         final SharedPreferences prefs = getPreferences();
         int appVersion = getAppVersion(context);
         Log.i(TAG, "Saving regId on app version " + appVersion);
@@ -192,13 +181,13 @@ public class MKActivity extends FragmentActivity {
 
         @Override
         protected Object doInBackground(String... params) {
-            String msg;
+            String msg = null;
             try {
                 if (gcm == null) {
                     gcm = GoogleCloudMessaging.getInstance(context);
                 }
-                regId = gcm.register(SENDER_ID);
-                msg = "Device registered, registration ID=" + regId;
+                regId = gcm.register(senderId);
+//                msg = "Device registered, registration ID=" + regId;
 
                 // You should send the registration ID to your server over HTTP,
                 // so it can use GCM/HTTP or CCS to send messages to your app.
@@ -212,7 +201,7 @@ public class MKActivity extends FragmentActivity {
 
                 // Persist the regID - no need to register again.
                 storeRegistrationId(context, regId);
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 msg = "Error :" + ex.getMessage();
                 // If there is an error, don't just keep trying to register.
                 // Require the user to click a button again, or perform
@@ -221,25 +210,13 @@ public class MKActivity extends FragmentActivity {
             return msg;
         }
 
-        @Override
-        protected void onPostExecute(Object o) {
-            Toast.makeText(context, o.toString(), Toast.LENGTH_SHORT).show();
-//                mDisplay.append(msg + "\n");
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
-                    new Intent(context, MKActivity.class), 0);
-            NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(context)
-                            .setSmallIcon(0)
-                            .setContentTitle("My notification")
-                            .setContentText("Hello World!");
-            mBuilder.setContentIntent(contentIntent);
-            mBuilder.setDefaults(Notification.DEFAULT_SOUND);
-            mBuilder.setAutoCancel(true);
-            NotificationManager mNotificationManager =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(1, mBuilder.build());
-
-        }
+//@todo here should be some sort of notification to GUI about unsuccessful registration
+//        @Override
+//        protected void onPostExecute(Object o) {
+//            if (o != null) {
+//                throw new GcmServiceException(o.toString());
+//            }
+//        }
     }
 
 }

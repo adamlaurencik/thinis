@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import sk.gymdb.thinis.model.dao.NewsDAO;
 
+@Deprecated
 public class NewsActivity extends Activity {
 
     int i;
@@ -29,7 +30,7 @@ public class NewsActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.message_layout);
+        setContentView(R.layout.layout_message);
         webView = (WebView) findViewById(R.id.webView);
         Intent intent = getIntent();
         i = intent.getIntExtra("MESSAGE_ID", 1);
