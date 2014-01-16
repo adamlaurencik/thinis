@@ -2,11 +2,14 @@ package sk.gymdb.thinis.gcm.login;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,17 +19,26 @@ import java.io.IOException;
  */
 public class LoginService {
 
-    public String doLogin() throws IOException {
-        String userName = "AdamLaurencik";
-        String password = "970520/4960";
+    HtmlPage page;
+
+    /**
+     * Returns true if login successfull false otherwise
+     *
+     * @param userName
+     * @param password
+     * @return
+     * @throws IOException
+     */
+    public boolean doLogin(String userName, String password) throws IOException {
+//        String userName = "AdamLaurencik";
+//        String password = "970520/4960";
 
         WebClient client = new WebClient();
-        HtmlPage page = client.getPage("https://gymdb.edupage.org/login/?msg=3");
+        page = client.getPage("https://gymdb.edupage.org/login/?msg=3");
 
         HtmlElement button = (HtmlElement) page.createElement("button");
         button.setAttribute("type", "submit");
 
-// append the button to the form
         HtmlElement form = (HtmlElement) page.createElement("form");
         form.setAttribute("action", "https://gymdb.edupage.org/login/edubarLogin.php");
         form.setAttribute("enctype", "multipart/form-data");
@@ -46,10 +58,50 @@ public class LoginService {
         form.appendChild(pass);
         form.appendChild(button);
 
-// submit the form
         page = button.click();
 
-        return page.asText();
+        String htmlCode = page.asText();
+
+        if (htmlCode.contains("Ste prihlásený ako ")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public UserInfo getUserInfo() {
+        String pageAsText = page.asText();
+        String htmlCode = page.asXml();
+        UserInfo userInfo = new UserInfo();
+
+        // user name
+        int index = pageAsText.indexOf("Ste prihlásený ako ");
+        String name = pageAsText.substring(index + 19);
+        name = name.substring(0, StringUtils.ordinalIndexOf(name, "\n", 1));
+        userInfo.setName(name);
+
+        // grades
+        HtmlElement element = (HtmlElement) page.getElementById("jw1_zsv");
+        List<HtmlElement> rows = element.getElementsByAttribute("tr", "style", "cursor:pointer");
+
+        for (int i = 0; i < rows.size(); i++) {
+            HtmlElement row = rows.get(i);
+            Iterable<DomElement> childrens = row.getChildElements();
+            Iterator it = childrens.iterator();
+            String subject = ((HtmlElement) it.next()).getTextContent();
+            ArrayList<String> grades = new ArrayList<String>();
+            while (it.hasNext()) {
+                HtmlElement element1 = (HtmlElement) it.next();
+                if (!element1.getTextContent().isEmpty()) {
+                    grades.add(element1.getTextContent());
+                }
+                if (element1.hasAttribute("colspan")) {
+                    break;
+                }
+            }
+            userInfo.addEvaluation(subject, grades);
+        }
+        return userInfo;
     }
 
 }
