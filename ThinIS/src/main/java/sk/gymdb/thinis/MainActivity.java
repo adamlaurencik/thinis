@@ -7,10 +7,28 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.http.AndroidHttpClient;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import sk.gymdb.thinis.gcm.GcmServiceException;
 import sk.gymdb.thinis.gcm.service.GcmService;
@@ -30,6 +48,12 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_main);
+
+        // testing post this will be removed
+        LoginExecutor executor = new LoginExecutor();
+        executor.execute(null, null, null);
+
+
 
         checkNetworkConnection();
 
@@ -151,6 +175,46 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    private class LoginExecutor extends AsyncTask<String, Void, Object> {
+
+        @Override
+        protected Object doInBackground(String... params) {
+            String msg = null;
+            HttpClient client = new DefaultHttpClient();
+            Properties props = new Properties();
+            try {
+                props.load(getResources().getAssets().open("application.properties"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            HttpPost post = new HttpPost(props.getProperty("server.url") + "/login");
+            List<NameValuePair> pairList = new ArrayList<NameValuePair>();
+            pairList.add(new BasicNameValuePair("u", "AdamLaurencik"));
+            pairList.add(new BasicNameValuePair("p", "970520/4960"));
+            try {
+                post.setEntity(new UrlEncodedFormEntity(pairList));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            HttpResponse response = null;
+            try {
+                response = client.execute(post);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            HttpEntity entity = response.getEntity();
+
+            try {
+                System.out.println(EntityUtils.toString(entity));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println(EntityUtils.getContentCharSet(entity));
+            System.out.println(response.getEntity());
+            return response;
+        }
+
+    }
 
 //    NewsDAO newsService = NewsDAO.getInstance();
 //    Button button;

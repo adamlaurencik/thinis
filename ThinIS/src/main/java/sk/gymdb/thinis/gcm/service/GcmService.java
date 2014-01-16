@@ -147,7 +147,7 @@ public class GcmService {
      */
     private void sendRegistrationIdToBackend() throws GcmServiceException {
         HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(serverUrl);
+        HttpPost httppost = new HttpPost(serverUrl + "register");
 
         try {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);

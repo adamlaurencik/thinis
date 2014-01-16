@@ -3,9 +3,11 @@ package sk.gymdb.thinis.gcm.web;
 import com.google.gson.Gson;
 import sk.gymdb.thinis.gcm.login.LoginService;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
@@ -23,6 +25,8 @@ public class LoginServlet extends HttpServlet {
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
             req.setCharacterEncoding("UTF-8");
+            resp.setContentType("text/plain; charset=utf-8");
+            resp.setCharacterEncoding("UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -36,8 +40,6 @@ public class LoginServlet extends HttpServlet {
             if (loginService.doLogin(username, password)) {
                 writer.append(gson.toJson(loginService.getUserInfo()));
             }
-            resp.setContentType("text/plain; charset=utf-8");
-            resp.setCharacterEncoding("UTF-8");
             resp.setStatus(HttpServletResponse.SC_OK);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -45,4 +47,8 @@ public class LoginServlet extends HttpServlet {
 
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        this.doGet(req, resp);
+    }
 }
