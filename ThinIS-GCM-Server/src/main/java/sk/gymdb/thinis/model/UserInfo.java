@@ -1,4 +1,4 @@
-package sk.gymdb.thinis.gcm.login;
+package sk.gymdb.thinis.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package sk.gymdb.thinis.gcm.substitutions;
+package sk.gymdb.thinis.web;
 
 import java.io.BufferedReader;
 import java.io.IOException;

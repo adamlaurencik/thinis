@@ -1,10 +1,11 @@
-package sk.gymdb.thinis.gcm.login;
+package sk.gymdb.thinis.service;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.apache.commons.lang3.StringUtils;
+import sk.gymdb.thinis.model.UserInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;

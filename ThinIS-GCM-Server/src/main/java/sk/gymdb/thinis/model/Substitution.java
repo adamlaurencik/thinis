@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package sk.gymdb.thinis.gcm.substitutions;
+package sk.gymdb.thinis.model;
 
 import java.util.List;
 

@@ -79,7 +79,7 @@
 
     <servlet>
         <servlet-name>ParserServlet</servlet-name>
-        <servlet-class>sk.gymdb.thinis.gcm.web.ParserServlet</servlet-class>
+        <servlet-class>sk.gymdb.thinis.web.ParserServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -89,7 +89,7 @@
 
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>sk.gymdb.thinis.gcm.web.LoginServlet</servlet-class>
+        <servlet-class>sk.gymdb.thinis.web.LoginServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

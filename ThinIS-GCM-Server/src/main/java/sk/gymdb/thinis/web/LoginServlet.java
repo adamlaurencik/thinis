@@ -1,7 +1,7 @@
-package sk.gymdb.thinis.gcm.web;
+package sk.gymdb.thinis.web;
 
 import com.google.gson.Gson;
-import sk.gymdb.thinis.gcm.login.LoginService;
+import sk.gymdb.thinis.service.LoginService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

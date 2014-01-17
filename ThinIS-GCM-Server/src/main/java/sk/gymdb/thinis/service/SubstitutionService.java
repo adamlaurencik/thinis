@@ -1,4 +1,4 @@
-package sk.gymdb.thinis.gcm.substitutions;
+package sk.gymdb.thinis.service;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
@@ -8,6 +8,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import sk.gymdb.thinis.model.Substitution;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -17,7 +18,7 @@ import java.util.*;
 /**
  * Created by matejkobza on 4.1.2014.
  */
-public class SubstitutionsParser {
+public class SubstitutionService {
 
     public static String parse() throws IOException {
         WebClient webClient = new WebClient();
