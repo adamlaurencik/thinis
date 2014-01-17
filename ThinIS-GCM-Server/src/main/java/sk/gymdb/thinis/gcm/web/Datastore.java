@@ -15,6 +15,9 @@
  */
 package sk.gymdb.thinis.gcm.web;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,59 +25,99 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
+ * REIMPLEMENT LATER TO CSV files
+ *
  * Simple implementation of a data store using standard Java collections.
- * <p>
+ *
+ * <p/>
  * This class is thread-safe but not persistent (it will lost the data when the
  * app is restarted) - it is meant just as an example.
  */
 public final class Datastore {
 
-  private static final Set<String> regIds = new HashSet<String>();
-  private static final Logger logger =
-      Logger.getLogger(Datastore.class.getName());
+    private static final Set<Registration> regIds = new HashSet<Registration>();
+    private static final Logger logger =
+            Logger.getLogger(Datastore.class.getName());
 
-  private Datastore() {
-    throw new UnsupportedOperationException();
-  }
-
-  /**
-   * Registers a device.
-   */
-  public static void register(String regId) {
-    logger.info("Registering " + regId);
-    synchronized (regIds) {
-      regIds.add(regId);
+    private Datastore() {
+        throw new UnsupportedOperationException();
     }
-  }
 
-  /**
-   * Unregisters a device.
-   */
-  public static void unregister(String regId) {
-    logger.info("Unregistering " + regId);
-    synchronized (regIds) {
-      regIds.remove(regId);
-    }
-  }
+    /**
+     * Registers a device.
+     */
+//    @Deprecated
+//    public static void register(String regId, String regClazz) {
+//        logger.info("Registering [" + regId + "," + regClazz + " ]");
+//        synchronized (regIds) {
+//            regIds.add(new Registration(regId, regClazz));
+//        }
+//    }
 
-  /**
-   * Updates the registration id of a device.
-   */
-  public static void updateRegistration(String oldId, String newId) {
-    logger.info("Updating " + oldId + " to " + newId);
-    synchronized (regIds) {
-      regIds.remove(oldId);
-      regIds.add(newId);
+    public static void register(Registration registration) {
+        logger.info("Registering " + registration);
+        synchronized (regIds) {
+            regIds.add(registration);
+        }
     }
-  }
 
-  /**
-   * Gets all registered devices.
-   */
-  public static List<String> getDevices() {
-    synchronized (regIds) {
-      return new ArrayList<String>(regIds);
+    /**
+     * Unregisters a device.
+     */
+//    @Deprecated
+//    public static void unregister(String regId) {
+//        logger.info("Unregistering " + regId);
+//        synchronized (regIds) {
+//            regIds.remove(new Registration(regId));
+//        }
+//    }
+
+    public static void unregister(Registration registration) {
+        logger.info("Unregistering " + registration);
+        synchronized (regIds) {
+            regIds.remove(registration);
+        }
     }
-  }
+
+    /**
+     * Updates the registration id of a device.
+     */
+//    @Deprecated
+//    public static void updateRegistration(String oldId, String newId, String newClazz) {
+//        logger.info("Updating " + oldId + " to " + newId);
+//        synchronized (regIds) {
+//            regIds.remove(new Registration(oldId));
+//            regIds.add(new Registration(newId, newClazz));
+//        }
+//    }
+
+    public static void updateRegistration(Registration oldRegistration, Registration newRegistration) {
+        logger.info("Updating " + oldRegistration + " to " + newRegistration);
+        synchronized (regIds) {
+            regIds.remove(oldRegistration);
+            regIds.add(newRegistration);
+        }
+    }
+
+    /**
+     * Gets all registered devices.
+     */
+//    @Deprecated
+//    public static List<String> getDevices() {
+//        synchronized (regIds) {
+//            return new ArrayList<String>(CollectionUtils.collect(regIds,new Transformer() {
+//                @Override
+//                public Object transform(Object o) {
+//                    return ((Registration)o).getId();
+//                }
+//            }));
+//        }
+//    }
+
+    public static List<Registration> getDevices() {
+        synchronized (regIds) {
+            return new ArrayList<Registration>(regIds);
+        }
+    }
 
 }
