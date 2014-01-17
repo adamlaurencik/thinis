@@ -11,6 +11,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -58,11 +59,17 @@ public class SubstitutionsHtmlParser {
         set = new HashSet<Substitution>();
         for (Element substitution : substitutions) {
             Substitution sub=new Substitution();
-            String who = substitution.select("td").first().text();
-            String hour= substitution.select("td").get(2).text();
-            String subject = substitution.select("td").get(3).text();
-            String teacher= substitution.select("td").get(4).text();
-            String comment= substitution.select("td").get(5).text();
+            Element whoTd = substitution.select("td").first();
+            if(whoTd.select("span[style]").size()>0){
+                sub.setOdpada(Boolean.TRUE);
+            } else sub.setOdpada(Boolean.FALSE);             
+            String whoString = substitution.select("td").first().text();
+            String hour= substitution.select("td").get(1).text();
+            String subject = substitution.select("td").get(2).text();
+            String teacher= substitution.select("td").get(3).text();
+            String comment= substitution.select("td").get(4).text();
+            List<String> whoArray = Arrays.asList(whoString.split("\\s*,\\s*"));
+            sub.setWho(whoArray);
             sub.setComment(comment);
             sub.setHour(hour);
             sub.setTeacher(teacher);
