@@ -78,16 +78,6 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>ParserServlet</servlet-name>
-        <servlet-class>sk.gymdb.thinis.web.ParserServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>ParserServlet</servlet-name>
-        <url-pattern>/parser</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>sk.gymdb.thinis.web.LoginServlet</servlet-class>
     </servlet>

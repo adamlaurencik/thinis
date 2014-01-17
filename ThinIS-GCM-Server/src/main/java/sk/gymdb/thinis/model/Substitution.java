@@ -84,5 +84,30 @@ public class Substitution {
         return out;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Substitution)) return false;
 
+        Substitution that = (Substitution) o;
+
+        if (!hour.equals(that.hour)) return false;
+        if (odpadne != null ? !odpadne.equals(that.odpadne) : that.odpadne != null) return false;
+        if (!subject.equals(that.subject)) return false;
+        if (!teacher.equals(that.teacher)) return false;
+
+        if (!who.equals(that.who)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = who.hashCode();
+        result = 31 * result + hour.hashCode();
+        result = 31 * result + subject.hashCode();
+        result = 31 * result + teacher.hashCode();
+        result = 31 * result + (odpadne != null ? odpadne.hashCode() : 0);
+        return result;
+    }
 }
