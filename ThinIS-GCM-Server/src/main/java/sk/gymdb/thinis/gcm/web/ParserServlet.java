@@ -1,6 +1,6 @@
 package sk.gymdb.thinis.gcm.web;
 
-import sk.gymdb.thinis.gcm.substitutions.SubstitutionsHtmlParser;
+import sk.gymdb.thinis.gcm.substitutions.SubstitutionsParser;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +20,7 @@ public class ParserServlet extends BaseServlet {
         resp.setContentType("text/html");
         PrintWriter out = resp.getWriter();
 
-        SubstitutionsHtmlParser parser = new SubstitutionsHtmlParser();
+        SubstitutionsParser parser = new SubstitutionsParser();
         out.print(parser.parse());
 
         resp.setStatus(HttpServletResponse.SC_OK);

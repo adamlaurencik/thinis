@@ -9,37 +9,33 @@ package sk.gymdb.thinis.gcm.substitutions;
 import java.util.List;
 
 /**
- *
  * @author Admin
  */
 public class Substitution {
+
     private List<String> who;
     private String hour;
     private String subject;
     private String teacher;
     private String comment;
     private Boolean odpadne;
-    
-    public Substitution(){
-        
-    }
 
     public void setHour(String hour) {
         this.hour = hour;
     }
 
     public void setSubject(String subject) {
-        if(subject.contains(Character.toString((char) 10132))){
-            int charIndex=subject.indexOf(Character.toString((char) 10132));
-            subject = subject.substring(charIndex, subject.length()-1);
+        if (subject.contains(Character.toString((char) 10132))) {
+            int charIndex = subject.indexOf(Character.toString((char) 10132));
+            subject = subject.substring(charIndex, subject.length() - 1);
         }
         this.subject = subject;
     }
 
     public void setTeacher(String teacher) {
-       if(teacher.contains(Character.toString((char) 10132))){
-       int charIndex=teacher.indexOf(Character.toString((char) 10132));
-      teacher = teacher.substring(charIndex, teacher.length()-1);
+        if (teacher.contains(Character.toString((char) 10132))) {
+            int charIndex = teacher.indexOf(Character.toString((char) 10132));
+            teacher = teacher.substring(charIndex, teacher.length() - 1);
         }
         this.teacher = teacher;
     }
@@ -75,21 +71,18 @@ public class Substitution {
     public void setOdpada(Boolean odpada) {
         this.odpadne = odpada;
     }
-    
+
 
     @Override
     public String toString() {
-        String out="";
-        if(odpadne){
-            out=who+"     "+hour+"    "+subject+"     "+teacher+"     "+comment+"- ODPADNE!<br>";
-        }
-        else{
-            out=who+"     "+hour+"    "+subject+"     "+teacher+"     "+comment+"<br>";
+        String out = "";
+        if (odpadne) {
+            out = who + "     " + hour + "    " + subject + "     " + teacher + "     " + comment + "- ODPADNE!<br>";
+        } else {
+            out = who + "     " + hour + "    " + subject + "     " + teacher + "     " + comment + "<br>";
         }
         return out;
     }
-    
-    
-    
-    
+
+
 }

@@ -21,6 +21,11 @@ public class LoginServlet extends HttpServlet {
 
     private Gson gson;
 
+    /**
+     * This should be replaced by post. Servlet should support only POST request not GET
+     * @param req
+     * @param resp
+     */
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
