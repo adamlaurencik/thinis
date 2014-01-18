@@ -36,9 +36,11 @@ public class SubstitutionService {
         // set the correct parsing date (tommorow is our goal)
         DateFormat dateFormat = new SimpleDateFormat("d. M.");
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, 1);
-        if (cal.get(Calendar.DAY_OF_WEEK) == 6) {
+        cal.add(Calendar.DAY_OF_YEAR, 1); // tommorow
+        if (cal.get(Calendar.DAY_OF_WEEK) == 6) { // friday we need 2 more days
             cal.add(Calendar.DAY_OF_YEAR, 2);
+        } else if (cal.get(Calendar.DAY_OF_WEEK) == 7) { // saturday we still need one more
+            cal.add(Calendar.DAY_OF_YEAR, 1);
         }
 
         Date tomorrowDate = new Date(cal.getTimeInMillis());

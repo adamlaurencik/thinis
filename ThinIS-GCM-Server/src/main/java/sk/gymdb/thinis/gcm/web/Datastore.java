@@ -120,4 +120,22 @@ public final class Datastore {
         }
     }
 
+    /**
+     *
+     * @param clazz
+     * @return list of registration Ids
+     */
+    public static List<Registration> getDevices(String clazz) {
+        synchronized (regIds) {
+            ArrayList<Registration> ids = new ArrayList<Registration>();
+            for (Registration r : regIds) {
+                // todo create better search rule
+                if (clazz.toUpperCase().trim().contains(r.getClazz().toUpperCase().trim())) {
+                    ids.add(r);
+                }
+            }
+            return ids;
+        }
+    }
+
 }
