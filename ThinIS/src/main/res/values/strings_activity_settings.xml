@@ -14,28 +14,46 @@
 
     <string name="pref_title_select_class">Vybrať triedu ktorú navštevujem</string>
     <string-array name="pref_list_classes">
-        <item>Príma</item>
-        <item>Sekunda</item>
-        <item>Tercia</item>
-        <item>Kvarta</item>
-        <item>Kvinta</item>
-        <item>Sexta</item>
-        <item>Septima</item>
-        <item>Oktáva</item>
+        <item>I.Príma</item>
+        <item>II.Sekunda</item>
+        <item>III.Tercia</item>
+        <item>IV.Kvarta</item>
+        <item>V.Kvinta</item>
+        <item>VI.Sexta</item>
+        <item>VII.Septima</item>
+        <item>VIII.Oktáva</item>
         <item>1.A</item>
         <item>1.B</item>
+        <item>2.A</item>
+        <item>2.B</item>
+        <item>2.C</item>
+        <item>3.A</item>
+        <item>3.B</item>
+        <item>3.C</item>
+        <item>4.A</item>
+        <item>4.B</item>
+        <item>4.C</item>
     </string-array>
     <string-array name="pref_list_classes_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
-        <item>1A</item>
-        <item>1B</item>
+        <item>I</item>
+        <item>II</item>
+        <item>III</item>
+        <item>IV</item>
+        <item>V</item>
+        <item>VI</item>
+        <item>VII</item>
+        <item>VIII</item>
+        <item>1.A</item>
+        <item>1.B</item>
+        <item>2.A</item>
+        <item>2.B</item>
+        <item>2.C</item>
+        <item>3.A</item>
+        <item>3.B</item>
+        <item>3.C</item>
+        <item>4.A</item>
+        <item>4.B</item>
+        <item>4.C</item>
     </string-array>
 
     <!-- Example settings for Data & Sync -->
