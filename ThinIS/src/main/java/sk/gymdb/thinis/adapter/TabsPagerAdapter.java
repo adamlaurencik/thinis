@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.Calendar;
 
 import sk.gymdb.thinis.fragment.DayOverviewFragment;
+import sk.gymdb.thinis.fragment.GradesOverviewFragment;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,7 +36,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             case 2:
                 cal = Calendar.getInstance();
                 cal.add(Calendar.DAY_OF_YEAR, 2);
-                return new DayOverviewFragment(cal.getTimeInMillis());
+                return new GradesOverviewFragment();
         }
 
         return null;
