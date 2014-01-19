@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import sk.gymdb.thinis.delegate.LoginDelegate;
 import sk.gymdb.thinis.service.LoginExecutor;
@@ -190,13 +191,13 @@ public class LoginActivity extends Activity implements LoginDelegate {
 
     @Override
     public void loginSuccessful(String output) {
-        // do something with GUI
+        Toast.makeText(this,output,Toast.LENGTH_SHORT).show();
         showProgress(false);
     }
 
     @Override
     public void loginUnsuccessful(String output) {
-        // do something with GUI
+        Toast.makeText(this,output,Toast.LENGTH_SHORT).show();
         showProgress(false);
     }
 
