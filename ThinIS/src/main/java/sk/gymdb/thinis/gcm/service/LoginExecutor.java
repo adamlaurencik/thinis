@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,7 +43,7 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
         String msg = null;
         HttpResponse response = null;
         Resources res=Resources.getSystem();
-        SharedPreferences prefs = context.getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String username= prefs.getString("username","");
         String password= prefs.getString("password","");
         if(!(username.equals("") || password.equals(""))){

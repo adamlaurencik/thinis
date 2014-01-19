@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -206,10 +207,11 @@ public class LoginActivity extends Activity {
             }
 
             // TODO: register the new account here.
-            SharedPreferences preferences= getPreferences(MODE_PRIVATE);
-            preferences.edit().putString("username",mEmail);
-            preferences.edit().putString("password",mPassword);
-            preferences.edit().commit();
+            SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("username",mEmail);
+            editor.putString("password",mPassword);
+            editor.commit();
             LoginExecutor executor= new LoginExecutor(getApplicationContext());
             executor.execute();
             return true;
