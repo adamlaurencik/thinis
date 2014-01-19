@@ -4,11 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -209,7 +206,7 @@ public class LoginActivity extends Activity implements LoginDelegate {
      */
     public void userLogin() /*extends AsyncTask<Void, Void, Boolean> */ {
         LoginExecutor executor = new LoginExecutor(getApplicationContext());
-        executor.loginDelegate = this;
+        executor.setLoginDelegate(this);
         executor.execute();
 
 //        @Override

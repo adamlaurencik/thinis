@@ -35,8 +35,8 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
 
     private final Context context;
     private final Gson gson;
-    public LoginDelegate loginDelegate;
-    public GradesDelegate gradesDelegate;
+    private LoginDelegate loginDelegate;
+    private GradesDelegate gradesDelegate;
 
     public LoginExecutor(Context context) {
         this.context = context;
@@ -89,17 +89,30 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
+        UserInfo info=new UserInfo();
         if (!(o == null)) {
             try {
-                UserInfo info = gson.fromJson(EntityUtils.toString((HttpEntity) o), UserInfo.class);
+                info = gson.fromJson(EntityUtils.toString((HttpEntity) o), UserInfo.class);
             } catch (IOException e) {
-                loginDelegate.loginUnsuccessful("no");
+                loginDelegate.loginUnsuccessful("Zadali ste zlé hodnoty");
                 e.printStackTrace();
             }
+            String name= info.getName();
+            String grades = gson.toJson(info.getEvaluation());
             SharedPreferences prefs = context.getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
-
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putString("name",name);
+            edit.putString("grades",grades);
+            edit.commit();
             loginDelegate.loginSuccessful("yes");
 
         }
+    }
+
+    public void setLoginDelegate(LoginDelegate delegate) {
+        this.loginDelegate = delegate;
+    }
+    public void setGradesDelegate(GradesDelegate delegate){
+        this.gradesDelegate= delegate;
     }
 }
