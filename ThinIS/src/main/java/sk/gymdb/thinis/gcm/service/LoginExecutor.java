@@ -1,5 +1,8 @@
 package sk.gymdb.thinis.gcm.service;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 
 import org.apache.http.HttpEntity;
@@ -21,22 +24,27 @@ import java.util.Properties;
 /**
  * Created by Admin on 1/18/14.
  */
-private class LoginExecutor extends AsyncTask<String, Void, Object> {
+public class LoginExecutor extends AsyncTask<String, Void, Object> {
 
     @Override
     protected Object doInBackground(String... params) {
         String msg = null;
+        Resources res=Resources.getSystem();
+        Context context=
+        SharedPreferences prefs = this.getApplicationContext().getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
+        String username=params[0];
+        String password=params[1];
         HttpClient client = new DefaultHttpClient();
         Properties props = new Properties();
         try {
-            props.load(getResources().getAssets().open("application.properties"));
+            props.load(res.getAssets().open("application.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }
         HttpPost post = new HttpPost(props.getProperty("server.url") + "/login");
         List<NameValuePair> pairList = new ArrayList<NameValuePair>();
-        pairList.add(new BasicNameValuePair("u", "AdamLaurencik"));
-        pairList.add(new BasicNameValuePair("p", "970520/4960"));
+        pairList.add(new BasicNameValuePair("u", username));
+        pairList.add(new BasicNameValuePair("p", password));
         try {
             post.setEntity(new UrlEncodedFormEntity(pairList));
         } catch (UnsupportedEncodingException e) {

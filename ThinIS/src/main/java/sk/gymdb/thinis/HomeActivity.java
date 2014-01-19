@@ -77,7 +77,6 @@ public class HomeActivity extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-        Toast.makeText(getApplicationContext(),String.valueOf(tab.getPosition()),Toast.LENGTH_SHORT).show();
     }
 
     @Override

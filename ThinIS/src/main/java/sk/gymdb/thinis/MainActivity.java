@@ -7,31 +7,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.http.AndroidHttpClient;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import sk.gymdb.thinis.gcm.GcmServiceException;
 import sk.gymdb.thinis.gcm.service.GcmService;
+import sk.gymdb.thinis.gcm.service.LoginExecutor;
 
 /**
  * This is the Entry point for the application
@@ -52,8 +35,6 @@ public class MainActivity extends FragmentActivity {
         // testing post this will be removed
         LoginExecutor executor = new LoginExecutor();
         executor.execute(null, null, null);
-
-
 
         checkNetworkConnection();
 
