@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import sk.gymdb.thinis.gcm.GcmServiceException;
 import sk.gymdb.thinis.gcm.service.GcmService;
-import sk.gymdb.thinis.gcm.service.LoginExecutor;
 
 /**
  * This is the Entry point for the application
@@ -33,8 +32,8 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         // testing post this will be removed
-        LoginExecutor executor = new LoginExecutor();
-        executor.execute(null, null, null);
+        //LoginExecutor executor = new LoginExecutor(this);
+        //executor.execute(null, null, null);
 
         checkNetworkConnection();
 

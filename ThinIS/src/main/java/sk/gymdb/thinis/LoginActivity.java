@@ -16,6 +16,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import sk.gymdb.thinis.gcm.service.LoginExecutor;
+
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
@@ -208,6 +210,8 @@ public class LoginActivity extends Activity {
             preferences.edit().putString("username",mEmail);
             preferences.edit().putString("password",mPassword);
             preferences.edit().commit();
+            LoginExecutor executor= new LoginExecutor(getApplicationContext());
+            executor.execute();
             return true;
         }
 

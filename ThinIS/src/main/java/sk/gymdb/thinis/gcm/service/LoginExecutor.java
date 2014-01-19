@@ -5,6 +5,9 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -21,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import sk.gymdb.thinis.model.pojo.UserInfo;
+
 /**
  * Created by Admin on 1/18/14.
  */
@@ -35,10 +40,12 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
     @Override
     protected Object doInBackground(String... params) {
         String msg = null;
+        HttpResponse response = null;
         Resources res=Resources.getSystem();
         SharedPreferences prefs = context.getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
-        String username=params[0];
-        String password=params[1];
+        String username= prefs.getString("username","");
+        String password= prefs.getString("password","");
+        if(!(username.equals("") || password.equals(""))){
         HttpClient client = new DefaultHttpClient();
         Properties props = new Properties();
         try {
@@ -55,7 +62,6 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        HttpResponse response = null;
         try {
             response = client.execute(post);
         } catch (IOException e) {
@@ -70,8 +76,17 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
         }
         System.out.println(EntityUtils.getContentCharSet(entity));
         System.out.println(response.getEntity());
+        }
         return response;
     }
 
-
+    @Override
+    protected void onPostExecute(Object o) {
+        super.onPostExecute(o);
+        Gson gson = new GsonBuilder().create();
+        if(!(o== null)){
+            UserInfo info=gson.fromJson(o.toString(), UserInfo.class);
+            SharedPreferences prefs = context.getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
+        }
+         }
 }
