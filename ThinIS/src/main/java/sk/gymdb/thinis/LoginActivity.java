@@ -17,21 +17,22 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import sk.gymdb.thinis.gcm.service.LoginExecutor;
+import sk.gymdb.thinis.delegate.LoginDelegate;
+import sk.gymdb.thinis.service.LoginExecutor;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
-public class LoginActivity extends Activity {
+public class LoginActivity extends Activity implements LoginDelegate {
     /**
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
      */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello",
-            "bar@example.com:world"
-    };
+//    private static final String[] DUMMY_CREDENTIALS = new String[]{
+//            "foo@example.com:hello",
+//            "bar@example.com:world"
+//    };
 
     /**
      * The default email to populate the email field with.
@@ -41,7 +42,7 @@ public class LoginActivity extends Activity {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+//    private UserLoginTask mAuthTask = null;
 
     // Values for email and password at the time of the login attempt.
     private String mEmail;
@@ -103,9 +104,9 @@ public class LoginActivity extends Activity {
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
+//        if (mAuthTask != null) {
+//            return;
+//        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -144,8 +145,9 @@ public class LoginActivity extends Activity {
             // perform the user login attempt.
             mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
             showProgress(true);
-            mAuthTask = new UserLoginTask();
-            mAuthTask.execute((Void) null);
+//            mAuthTask = new UserLoginTask();
+//            mAuthTask.execute((Void) null);
+            this.userLogin();
         }
     }
 
@@ -189,51 +191,68 @@ public class LoginActivity extends Activity {
         }
     }
 
+    @Override
+    public void loginSuccessful(String output) {
+        // do something with GUI
+        showProgress(false);
+    }
+
+    @Override
+    public void loginUnsuccessful(String output) {
+        // do something with GUI
+        showProgress(false);
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+    public void userLogin() /*extends AsyncTask<Void, Void, Boolean> */ {
+        LoginExecutor executor = new LoginExecutor(getApplicationContext());
+        executor.loginDelegate = this;
+        executor.execute();
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("username",mEmail);
-            editor.putString("password",mPassword);
-            editor.commit();
-            LoginExecutor executor= new LoginExecutor(getApplicationContext());
-            executor.execute();
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
+//        @Override
+//        protected Boolean doInBackground(Void... params) {
+//            TODO: attempt authentication against a network service.
+//
+//            for (String credential : DUMMY_CREDENTIALS) {
+//                String[] pieces = credential.split(":");
+//                if (pieces[0].equals(mEmail)) {
+//                    Account exists, return true if the password matches.
+//                    return pieces[1].equals(mPassword);
+//                }
+//            }
+//
+//            TODO: register the new account here.
+//            SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//            SharedPreferences.Editor editor = preferences.edit();
+//            editor.putString("username", mEmail);
+//            editor.putString("password", mPassword);
+//            editor.commit();
+//            LoginExecutor executor= new LoginExecutor(getApplicationContext());
+//            executor.loginDelegate = this;
+//            executor.execute();
+//            return true;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(final Boolean success) {
+//            mAuthTask = null;
+//            showProgress(false);
+//
+//            if (success) {
+//                finish();
+//            } else {
+//                mPasswordView.setError(getString(R.string.error_incorrect_password));
+//                mPasswordView.requestFocus();
+//            }
+//        }
+//
+//        @Override
+//        protected void onCancelled() {
+//            mAuthTask = null;
+//            showProgress(false);
+//        }
     }
 }

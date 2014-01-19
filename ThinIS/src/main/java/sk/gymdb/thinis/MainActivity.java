@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import sk.gymdb.thinis.delegate.LoginDelegate;
 import sk.gymdb.thinis.gcm.GcmServiceException;
 import sk.gymdb.thinis.gcm.service.GcmService;
 
