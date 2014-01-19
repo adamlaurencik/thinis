@@ -26,12 +26,17 @@ import java.util.Properties;
  */
 public class LoginExecutor extends AsyncTask<String, Void, Object> {
 
+    private final Context context;
+
+    public LoginExecutor(Context context) {
+        this.context = context;
+    }
+
     @Override
     protected Object doInBackground(String... params) {
         String msg = null;
         Resources res=Resources.getSystem();
-        Context context=
-        SharedPreferences prefs = this.getApplicationContext().getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
         String username=params[0];
         String password=params[1];
         HttpClient client = new DefaultHttpClient();
