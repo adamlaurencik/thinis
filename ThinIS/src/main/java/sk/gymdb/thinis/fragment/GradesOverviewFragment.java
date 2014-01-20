@@ -41,7 +41,7 @@ public class GradesOverviewFragment extends Fragment {
         LinkedHashMap<String, ArrayList<String>> info = new Gson().fromJson(gradesJson, LinkedHashMap.class);
         TableLayout table= (TableLayout) rootView.findViewById(R.id.table);
         TextView textView= (TextView) rootView.findViewById(R.id.GradesText);
-        textView.setText("Ste prihlásený ako: "+name);
+        textView.setText(name);
         for (String key : info.keySet()) {
             TableRow row = new TableRow(context);
             TextView subject= new TextView(context);
