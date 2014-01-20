@@ -4,8 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -145,6 +147,12 @@ public class LoginActivity extends Activity implements LoginDelegate {
             showProgress(true);
 //            mAuthTask = new UserLoginTask();
 //            mAuthTask.execute((Void) null);
+              SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+              SharedPreferences.Editor editor = preferences.edit();
+              editor.putString("username", mEmail);
+              editor.putString("password", mPassword);
+              editor.commit();
+
             this.userLogin();
         }
     }
@@ -223,11 +231,6 @@ public class LoginActivity extends Activity implements LoginDelegate {
 //            }
 //
 //            TODO: register the new account here.
-//            SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//            SharedPreferences.Editor editor = preferences.edit();
-//            editor.putString("username", mEmail);
-//            editor.putString("password", mPassword);
-//            editor.commit();
 //            LoginExecutor executor= new LoginExecutor(getApplicationContext());
 //            executor.loginDelegate = this;
 //            executor.execute();

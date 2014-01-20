@@ -3,7 +3,6 @@ package sk.gymdb.thinis.service;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
@@ -15,6 +14,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.BasicManagedEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -85,7 +85,8 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
         UserInfo info = new UserInfo();
         if (!(o == null)) {
             try {
-                info = gson.fromJson(EntityUtils.toString((HttpEntity) o), UserInfo.class);
+                String sourceString= new String(EntityUtils.toString((BasicManagedEntity) o));
+                info = gson.fromJson(sourceString, UserInfo.class);
             } catch (IOException e) {
                 loginDelegate.loginUnsuccessful("Zadali ste zlé hodnoty");
                 e.printStackTrace();
