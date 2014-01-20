@@ -2,6 +2,7 @@ package sk.gymdb.thinis.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -51,14 +52,14 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String username = prefs.getString("username", "");
         String password = prefs.getString("password", "");
+        AssetManager assetManager = context.getAssets();
         if (!(username.equals("") || password.equals(""))) {
             HttpClient client = new DefaultHttpClient();
             Properties props = new Properties();
             try {
-                props.load(res.getAssets().open("application.properties"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+                props.load(assetManager.open("application.properties"));
+
             HttpPost post = new HttpPost(props.getProperty("server.url") + "/login");
             List<NameValuePair> pairList = new ArrayList<NameValuePair>();
             pairList.add(new BasicNameValuePair("u", username));
@@ -70,6 +71,9 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
             }
             try {
                 response = client.execute(post);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             } catch (IOException e) {
                 e.printStackTrace();
             }
