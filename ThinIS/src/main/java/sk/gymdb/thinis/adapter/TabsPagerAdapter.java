@@ -1,5 +1,6 @@
 package sk.gymdb.thinis.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,6 +18,8 @@ import sk.gymdb.thinis.fragment.GradesOverviewFragment;
  */
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 
+
+
     public TabsPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -26,21 +29,10 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         Calendar cal;
 
         switch (index) {
-            case 0:
-                cal = Calendar.getInstance();
-                return new DayOverviewFragment(cal.getTimeInMillis());
-            case 1:
-                cal = Calendar.getInstance();
-                cal.add(Calendar.DAY_OF_YEAR, 1);
-                return new DayOverviewFragment(cal.getTimeInMillis());
-            case 2:
-                cal = Calendar.getInstance();
-                cal.add(Calendar.DAY_OF_YEAR, 2);
-                return new GradesOverviewFragment();
+//            return Fragment.instantiate(context, )
         }
-
         return null;
-    }
+}
 
     @Override
     public int getCount() {
