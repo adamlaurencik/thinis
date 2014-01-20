@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#000000" >
-
-    <TextView android:layout_width="fill_parent"
+    android:background="#000000"
+    android:id="@+id/table">
+        <TextView android:layout_width="fill_parent"
         android:id="@+id/GradesText"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Fill the table with grades in here"
+        android:text="Show name"
         android:textSize="20dp"
         android:layout_centerInParent="true"/>
 
 
-</RelativeLayout>
+</TableLayout>

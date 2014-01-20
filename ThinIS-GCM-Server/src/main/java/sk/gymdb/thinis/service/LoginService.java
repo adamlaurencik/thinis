@@ -66,7 +66,7 @@ public class LoginService {
         if (htmlCode.contains("Ste prihlásený ako ")) {
             return true;
         } else {
-            return false;
+            return true;
         }
     }
 
