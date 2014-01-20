@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.gson.Gson;
 
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import sk.gymdb.thinis.R;
 import sk.gymdb.thinis.delegate.GradesDelegate;
 import sk.gymdb.thinis.delegate.LoginDelegate;
 import sk.gymdb.thinis.model.pojo.UserInfo;
@@ -32,14 +34,16 @@ import sk.gymdb.thinis.model.pojo.UserInfo;
 /**
  * Created by Admin on 1/18/14.
  */
-public class LoginExecutor extends AsyncTask<String, Void, Object> {
+public class LoginService extends AsyncTask<String, Void, Object> {
+
+    private static final String TAG = "LoginService";
 
     private final Context context;
     private final Gson gson;
     private LoginDelegate loginDelegate;
     private GradesDelegate gradesDelegate;
 
-    public LoginExecutor(Context context) {
+    public LoginService(Context context) {
         this.context = context;
         gson = new Gson();
     }
@@ -58,7 +62,7 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
             try {
                 props.load(assetManager.open("application.properties"));
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Unable to load application.properties");
             }
             HttpPost post = new HttpPost(props.getProperty("server.url") + "/login");
             List<NameValuePair> pairList = new ArrayList<NameValuePair>();
@@ -67,16 +71,23 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
             try {
                 post.setEntity(new UrlEncodedFormEntity(pairList));
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Unsupported encoding for passed parameters");
             }
             try {
                 response = client.execute(post);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Unable to execute post request");
             }
             entity = response.getEntity();
         }
         return entity;
+    }
+
+    @Override
+    protected void onCancelled(Object o) {
+        super.onCancelled(o);
+        Log.i(TAG, "Task cancelled");
+        loginDelegate.loginCancelled(o.toString());
     }
 
     @Override
@@ -85,23 +96,29 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
         UserInfo info = new UserInfo();
         if (!(o == null)) {
             try {
-                String sourceString= new String(EntityUtils.toString((BasicManagedEntity) o));
+                String sourceString = new String(EntityUtils.toString((BasicManagedEntity) o));
                 info = gson.fromJson(sourceString, UserInfo.class);
             } catch (IOException e) {
-                loginDelegate.loginUnsuccessful("Zadali ste zlé hodnoty");
-                e.printStackTrace();
+                loginDelegate.loginUnsuccessful(context.getString(R.string.wrong_login_credentials));
+                Log.e(TAG, "Login attempt was not successful due to exception");
             }
-            String name = info.getName();
-            String grades = gson.toJson(info.getEvaluation());
-            SharedPreferences prefs = context.getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putString("name", name);
-            edit.putString("grades", grades);
-            edit.commit();
-            loginDelegate.loginSuccessful("yes");
-
+            if (info != null) {
+                String name = info.getName();
+                String grades = gson.toJson(info.getEvaluation());
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                SharedPreferences.Editor edit = prefs.edit();
+                edit.putString("name", name);
+                edit.putString("grades", grades);
+                edit.commit();
+                Log.i(TAG, "Successful login");
+                loginDelegate.loginSuccessful(name);
+            } else {
+                loginDelegate.loginUnsuccessful(context.getString(R.string.wrong_login_credentials));
+                Log.i(TAG, "Login attempt was not successful due to wrong credentials");
+            }
         }
     }
+
 
     public void setLoginDelegate(LoginDelegate delegate) {
         this.loginDelegate = delegate;

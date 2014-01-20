@@ -4,13 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -18,21 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import sk.gymdb.thinis.delegate.LoginDelegate;
-import sk.gymdb.thinis.service.LoginExecutor;
+import sk.gymdb.thinis.service.LoginService;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
 public class LoginActivity extends Activity implements LoginDelegate {
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-//    private static final String[] DUMMY_CREDENTIALS = new String[]{
-//            "foo@example.com:hello",
-//            "bar@example.com:world"
-//    };
 
     /**
      * The default email to populate the email field with.
@@ -42,7 +33,7 @@ public class LoginActivity extends Activity implements LoginDelegate {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-//    private UserLoginTask mAuthTask = null;
+    private LoginService mAuthTask = null;
 
     // Values for email and password at the time of the login attempt.
     private String mEmail;
@@ -88,15 +79,19 @@ public class LoginActivity extends Activity implements LoginDelegate {
                 attemptLogin();
             }
         });
+
+        mAuthTask = new LoginService(getApplicationContext());
+        mAuthTask.setLoginDelegate(this);
+
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.login, menu);
-        return true;
-    }
+// most probably we dont need this thing
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        super.onCreateOptionsMenu(menu);
+//        getMenuInflater().inflate(R.menu.login, menu);
+//        return true;
+//    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -104,9 +99,9 @@ public class LoginActivity extends Activity implements LoginDelegate {
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
+        if (mAuthTask.getStatus() == AsyncTask.Status.RUNNING) {
+            return;
+        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -145,15 +140,8 @@ public class LoginActivity extends Activity implements LoginDelegate {
             // perform the user login attempt.
             mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
             showProgress(true);
-//            mAuthTask = new UserLoginTask();
-//            mAuthTask.execute((Void) null);
-              SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-              SharedPreferences.Editor editor = preferences.edit();
-              editor.putString("username", mEmail);
-              editor.putString("password", mPassword);
-              editor.commit();
-
-            this.userLogin();
+            // try to login user
+            mAuthTask.execute();
         }
     }
 
@@ -199,61 +187,19 @@ public class LoginActivity extends Activity implements LoginDelegate {
 
     @Override
     public void loginSuccessful(String output) {
-        Toast.makeText(this,output,Toast.LENGTH_SHORT).show();
         showProgress(false);
+        Intent activityChangeIntent = new Intent(LoginActivity.this, MainActivity.class);
+        LoginActivity.this.startActivity(activityChangeIntent);
     }
 
     @Override
     public void loginUnsuccessful(String output) {
-        Toast.makeText(this,output,Toast.LENGTH_SHORT).show();
         showProgress(false);
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public void userLogin() /*extends AsyncTask<Void, Void, Boolean> */ {
-        LoginExecutor executor = new LoginExecutor(getApplicationContext());
-        executor.setLoginDelegate(this);
-        executor.execute();
-
-//        @Override
-//        protected Boolean doInBackground(Void... params) {
-//            TODO: attempt authentication against a network service.
-//
-//            for (String credential : DUMMY_CREDENTIALS) {
-//                String[] pieces = credential.split(":");
-//                if (pieces[0].equals(mEmail)) {
-//                    Account exists, return true if the password matches.
-//                    return pieces[1].equals(mPassword);
-//                }
-//            }
-//
-//            TODO: register the new account here.
-//            LoginExecutor executor= new LoginExecutor(getApplicationContext());
-//            executor.loginDelegate = this;
-//            executor.execute();
-//            return true;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(final Boolean success) {
-//            mAuthTask = null;
-//            showProgress(false);
-//
-//            if (success) {
-//                finish();
-//            } else {
-//                mPasswordView.setError(getString(R.string.error_incorrect_password));
-//                mPasswordView.requestFocus();
-//            }
-//        }
-//
-//        @Override
-//        protected void onCancelled() {
-//            mAuthTask = null;
-//            showProgress(false);
-//        }
+    @Override
+    public void loginCancelled(String message) {
+        //todo we need to implement cancel button
+        showProgress(false);
     }
 }

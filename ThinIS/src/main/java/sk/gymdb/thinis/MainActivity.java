@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -32,17 +33,10 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(saveInstanceState);
         setContentView(R.layout.activity_main);
 
-        // testing post this will be removed
-        //LoginExecutor executor = new LoginExecutor(this);
-        //executor.execute(null, null, null);
-
-        checkNetworkConnection();
-
-        checkGcm();
+        checkClassSelected();
 
         checkCredentials();
 
-        checkClassSelected();
     }
 
     private void proceed() {
@@ -50,58 +44,61 @@ public class MainActivity extends FragmentActivity {
             Intent activityChangeIntent = new Intent(MainActivity.this, HomeActivity.class);
             MainActivity.this.startActivity(activityChangeIntent);
         } else {
-            Toast.makeText(getApplicationContext(), "Unable to proceed." , Toast.LENGTH_LONG);
+            // there is nothing to say to this for now
+            //Toast.makeText(getApplicationContext(), R.string.unexpected_error , Toast.LENGTH_LONG);
         }
     }
 
-    private void checkNetworkConnection() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (ni == null) {
-            Log.e(TAG, "No internet connection");
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-            dialogBuilder.setMessage(getResources().getString(R.string.no_internet_connection));
-            dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    showDialogs--;
-                    proceed();
-                }
-            });
-            showDialogs++;
-            dialogBuilder.show();
-        }
-    }
+//    hopefully we wont use this any more
+//    private void checkNetworkConnection() {
+//        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo ni = cm.getActiveNetworkInfo();
+//        if (ni == null) {
+//            Log.e(TAG, "No internet connection");
+//            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+//            dialogBuilder.setMessage(getResources().getString(R.string.no_internet_connection));
+//            dialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    showDialogs--;
+//                    proceed();
+//                }
+//            });
+//            showDialogs++;
+//            dialogBuilder.show();
+//        }
+//    }
 
     /**
      * check if is registered and if not, than register
      */
-    private void checkGcm() {
-        try {
-            new GcmService(this);
-        } catch (GcmServiceException ex) {
-            Log.e(TAG, "Gcm services unavailable");
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle(R.string.gcm_service);
-            dialog.setMessage(getResources().getString(R.string.gcm_service_error));
-            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    showDialogs--;
-                    proceed();
-                }
-            });
-            showDialogs++;
-            dialog.show();
-        }
-    }
+// we don't care about GCM after lunch
+//    private void checkGcm() {
+//        try {
+//            new GcmService(this);
+//        } catch (GcmServiceException ex) {
+//            Log.e(TAG, "Gcm services unavailable");
+//            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+//            dialog.setTitle(R.string.gcm_service);
+//            dialog.setMessage(getResources().getString(R.string.gcm_service_error));
+//            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    showDialogs--;
+//                    proceed();
+//                }
+//            });
+//            showDialogs++;
+//            dialog.show();
+//        }
+//    }
 
     /**
      * check if the user has filled username and password, if not ask for username and password
      */
     private void checkCredentials() {
 
-        SharedPreferences prefs = this.getApplicationContext().getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (prefs.getString("username", "").isEmpty() || prefs.getString("password", "").isEmpty()) {
             Log.i(TAG, "None credentials found");
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);

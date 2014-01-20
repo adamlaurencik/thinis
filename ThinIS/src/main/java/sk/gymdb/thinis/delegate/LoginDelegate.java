@@ -5,8 +5,12 @@ package sk.gymdb.thinis.delegate;
  */
 public interface LoginDelegate {
 
-    void loginSuccessful(String output);
+    void loginSuccessful(String message);
 
-    void loginUnsuccessful(String output);
+    void loginUnsuccessful(String message);
+
+    void loginCancelled(String message);
+
+
 
 }

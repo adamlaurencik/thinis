@@ -8,6 +8,8 @@
     <string name="regid_registration_unsuccessful">Registrácia zariadenia neúspešná</string>
     <string name="play_services_not_available">Skontrolujte nastavenia služieb Google Play, pretože nie sú dostupné.</string>
     <string name="refresh">Obnoviť</string>
+    <string name="unexpected_error">Vyskytla sa závažná chyba pre ktorú aplikácia nemôže pokračovať. Kontaktujte, prosím, čo najskôr technickú podporu.</string>
+    <string name="wrong_login_credentials">Nesprávne prihlasovacie údaje</string>
 
     <array name="clazz">
         <item>Príma</item>
