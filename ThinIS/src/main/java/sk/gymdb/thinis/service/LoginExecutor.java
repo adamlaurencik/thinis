@@ -46,20 +46,20 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
 
     @Override
     protected Object doInBackground(String... params) {
-        String msg = null;
         HttpResponse response = null;
-        Resources res = Resources.getSystem();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String username = prefs.getString("username", "");
         String password = prefs.getString("password", "");
         AssetManager assetManager = context.getAssets();
+        HttpEntity entity = null;
         if (!(username.equals("") || password.equals(""))) {
             HttpClient client = new DefaultHttpClient();
             Properties props = new Properties();
             try {
-
                 props.load(assetManager.open("application.properties"));
-
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             HttpPost post = new HttpPost(props.getProperty("server.url") + "/login");
             List<NameValuePair> pairList = new ArrayList<NameValuePair>();
             pairList.add(new BasicNameValuePair("u", username));
@@ -74,26 +74,15 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-//            HttpEntity entity = response.getEntity();
-
-//            try {
-//                System.out.println(EntityUtils.toString(entity));
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            System.out.println(EntityUtils.getContentCharSet(entity));
-//            System.out.println(response.getEntity());
+            entity = response.getEntity();
         }
-        return response.getEntity();
+        return entity;
     }
 
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
-        UserInfo info=new UserInfo();
+        UserInfo info = new UserInfo();
         if (!(o == null)) {
             try {
                 info = gson.fromJson(EntityUtils.toString((HttpEntity) o), UserInfo.class);
@@ -101,12 +90,12 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
                 loginDelegate.loginUnsuccessful("Zadali ste zlé hodnoty");
                 e.printStackTrace();
             }
-            String name= info.getName();
+            String name = info.getName();
             String grades = gson.toJson(info.getEvaluation());
             SharedPreferences prefs = context.getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
             SharedPreferences.Editor edit = prefs.edit();
-            edit.putString("name",name);
-            edit.putString("grades",grades);
+            edit.putString("name", name);
+            edit.putString("grades", grades);
             edit.commit();
             loginDelegate.loginSuccessful("yes");
 
@@ -116,7 +105,8 @@ public class LoginExecutor extends AsyncTask<String, Void, Object> {
     public void setLoginDelegate(LoginDelegate delegate) {
         this.loginDelegate = delegate;
     }
-    public void setGradesDelegate(GradesDelegate delegate){
-        this.gradesDelegate= delegate;
+
+    public void setGradesDelegate(GradesDelegate delegate) {
+        this.gradesDelegate = delegate;
     }
 }
