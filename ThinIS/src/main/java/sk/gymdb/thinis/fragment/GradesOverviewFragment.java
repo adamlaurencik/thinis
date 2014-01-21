@@ -56,8 +56,8 @@ public class GradesOverviewFragment extends Fragment {
             TableRow row = new TableRow(context);
             TextView subject = new TextView(context);
             TextView grades = new TextView(context);
-            grades.setPadding(2, 2, 2, 0);
-            subject.setPadding(2, 2, 2, 0);
+            grades.setPadding(3, 2, 2, 0);
+            subject.setPadding(3, 2, 2, 0);
             // makes TextViews adapt to the text (if it is longer than one row it puts text in it into another row)
             subject.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
             grades.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
