@@ -6,7 +6,6 @@
     android:background="#fa6a6a" >
 
     <TextView android:layout_width="fill_parent"
-        android:id="@+id/MainText"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Design Top Rated Screen"

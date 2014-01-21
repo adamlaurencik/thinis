@@ -5,13 +5,4 @@
     android:orientation="vertical"
     android:background="#000000"
     android:id="@+id/table">
-        <TextView android:layout_width="fill_parent"
-        android:id="@+id/GradesText"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Show name"
-        android:textSize="20dp"
-        android:layout_centerInParent="true"/>
-
-
 </TableLayout>
