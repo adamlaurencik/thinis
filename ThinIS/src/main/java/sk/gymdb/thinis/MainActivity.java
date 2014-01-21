@@ -5,17 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.widget.Toast;
 
-import sk.gymdb.thinis.delegate.LoginDelegate;
-import sk.gymdb.thinis.gcm.GcmServiceException;
-import sk.gymdb.thinis.gcm.service.GcmService;
+import sk.gymdb.thinis.utils.LoginUtils;
 
 /**
  * This is the Entry point for the application
@@ -37,6 +32,7 @@ public class MainActivity extends FragmentActivity {
 
         checkCredentials();
 
+        proceed();
     }
 
     private void proceed() {
@@ -97,10 +93,7 @@ public class MainActivity extends FragmentActivity {
      * check if the user has filled username and password, if not ask for username and password
      */
     private void checkCredentials() {
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        if (prefs.getString("username", "").isEmpty() || prefs.getString("password", "").isEmpty()) {
-            Log.i(TAG, "None credentials found");
+        if (!LoginUtils.credentialsAvailable(getApplicationContext())) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setTitle(R.string.credentials);
             dialog.setMessage(R.string.no_credentials_found);
@@ -128,7 +121,7 @@ public class MainActivity extends FragmentActivity {
      */
     private void checkClassSelected() {
 
-        SharedPreferences prefs = this.getApplicationContext().getSharedPreferences("APPLICATION", Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if (prefs.getString("clazz", "").isEmpty()) {
             Log.i(TAG, "No class selected");
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -153,9 +146,7 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-
-
-//    NewsDAO newsService = NewsDAO.getInstance();
+    //    NewsDAO newsService = NewsDAO.getInstance();
 //    Button button;
 //    int i = 0;
 //    float X;

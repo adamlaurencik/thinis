@@ -1,6 +1,9 @@
 package sk.gymdb.thinis.service;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
@@ -26,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import sk.gymdb.thinis.LoginActivity;
 import sk.gymdb.thinis.R;
 import sk.gymdb.thinis.delegate.GradesDelegate;
 import sk.gymdb.thinis.delegate.LoginDelegate;

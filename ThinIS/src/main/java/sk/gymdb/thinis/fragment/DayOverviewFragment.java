@@ -15,8 +15,8 @@ public class DayOverviewFragment extends Fragment {
 
     private long time;
 
-    public DayOverviewFragment(long timeInMillis) {
-        time = timeInMillis;
+    public DayOverviewFragment() {
+
     }
 
     @Override

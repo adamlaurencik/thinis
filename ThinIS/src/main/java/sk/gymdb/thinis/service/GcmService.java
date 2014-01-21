@@ -1,4 +1,4 @@
-package sk.gymdb.thinis.gcm.service;
+package sk.gymdb.thinis.service;
 
 import android.app.Activity;
 import android.content.Context;
@@ -37,8 +37,6 @@ public class GcmService {
     private static final String TAG = "GcmService";
     private static final String PROPERTY_REG_ID = "REGID";
     private static final String PROPERTY_APP_VERSION = "1";
-//    private static final String SENDER_ID = "1045030114303";
-//    private static final String HTTP_SERVER_ADDRESS = "http://192.168.2.54:8084/ThinIS-GCM-Server/register";
 
     private String senderId;
     private String serverUrl;
@@ -52,8 +50,7 @@ public class GcmService {
 
         Properties properties = new Properties();
         try {
-            // this is not working dont know why
-            InputStream inputStream = context.getResources().getAssets().open("application.properties");
+            InputStream inputStream = context.getAssets().open("application.properties");
             properties.load(inputStream);
         } catch (IOException e) {
             throw new GcmServiceException(e);
