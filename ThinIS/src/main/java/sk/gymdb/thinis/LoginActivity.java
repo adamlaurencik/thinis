@@ -7,9 +7,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,7 +39,7 @@ public class LoginActivity extends Activity implements LoginDelegate {
     private LoginService mAuthTask = null;
 
     // Values for email and password at the time of the login attempt.
-    private String mEmail;
+    private String mUsername;
     private String mPassword;
 
     // UI references.
@@ -54,9 +56,9 @@ public class LoginActivity extends Activity implements LoginDelegate {
         setContentView(R.layout.activity_login);
 
         // Set up the login form.
-        mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
+        mUsername = getIntent().getStringExtra(EXTRA_EMAIL);
         mEmailView = (EditText) findViewById(R.id.email);
-        mEmailView.setText(mEmail);
+        mEmailView.setText(mUsername);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -109,7 +111,7 @@ public class LoginActivity extends Activity implements LoginDelegate {
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        mEmail = mEmailView.getText().toString();
+        mUsername = mEmailView.getText().toString();
         mPassword = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -127,7 +129,7 @@ public class LoginActivity extends Activity implements LoginDelegate {
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(mEmail)) {
+        if (TextUtils.isEmpty(mUsername)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
@@ -140,6 +142,12 @@ public class LoginActivity extends Activity implements LoginDelegate {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
+
+            SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+            prefs.putString("username", mUsername);
+            prefs.putString("password", mPassword);
+            prefs.commit();
+
             showProgress(true);
             // try to login user
             mAuthTask.execute();
@@ -195,6 +203,10 @@ public class LoginActivity extends Activity implements LoginDelegate {
     @Override
     public void loginUnsuccessful(String message) {
         showProgress(false);
+        SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+        prefs.putString("username", "");
+        prefs.putString("password", "");
+        prefs.commit();
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(R.string.credentials);
         dialog.setMessage(message);

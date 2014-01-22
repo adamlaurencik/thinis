@@ -2,8 +2,10 @@ package sk.gymdb.thinis;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -12,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import sk.gymdb.thinis.delegate.GradesDelegate;
-import sk.gymdb.thinis.delegate.LoginDelegate;
 import sk.gymdb.thinis.fragment.DayOverviewFragment;
 import sk.gymdb.thinis.fragment.GradesOverviewFragment;
 import sk.gymdb.thinis.service.LoginService;
@@ -23,12 +24,9 @@ import sk.gymdb.thinis.service.LoginService;
  * Date: 15.1.2014
  * Time: 16:59
  */
-public class HomeActivity extends Activity implements GradesDelegate, LoginDelegate {
+public class HomeActivity extends Activity implements GradesDelegate {
 
 
-    private ActionBar actionBar;
-    private Resources res;
-    private String[] tabs;
     private Menu actionBarMenu;
     private LoginService loginService;
 
@@ -38,13 +36,12 @@ public class HomeActivity extends Activity implements GradesDelegate, LoginDeleg
 
         loginService = new LoginService(getApplicationContext());
         loginService.setGradesDelegate(this);
-        loginService.setLoginDelegate(this);
 
-        res = getResources();
-        tabs = res.getStringArray(R.array.tabs);
+        Resources res = getResources();
+        String[] tabs = res.getStringArray(R.array.tabs);
 
         // Initilization
-        actionBar = getActionBar();
+        ActionBar actionBar = getActionBar();
         actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
@@ -76,7 +73,7 @@ public class HomeActivity extends Activity implements GradesDelegate, LoginDeleg
         Intent activityChangeIntent;
         switch (item.getItemId()) {
             case R.id.menu_item_refresh:
-                isRefreshingState(true);
+                showProgress(true);
                 loginService.execute();
                 return true;
             case R.id.menu_item_login:
@@ -91,7 +88,7 @@ public class HomeActivity extends Activity implements GradesDelegate, LoginDeleg
         return super.onOptionsItemSelected(item);
     }
 
-    public void isRefreshingState(final boolean refreshing) {
+    public void showProgress(final boolean refreshing) {
         if (this.actionBarMenu != null) {
             final MenuItem refreshItem = actionBarMenu
                     .findItem(R.id.menu_item_refresh);
@@ -107,27 +104,23 @@ public class HomeActivity extends Activity implements GradesDelegate, LoginDeleg
 
     @Override
     public void refreshSuccessful(String message) {
-        isRefreshingState(false);
+        showProgress(false);
+        // todo refresh grades overview fragment
     }
 
     @Override
     public void refreshUnsuccessful(String message) {
-        // todo alert in here
-    }
-
-    @Override
-    public void loginSuccessful(String message) {
-        // nothing happens here
-    }
-
-    @Override
-    public void loginUnsuccessful(String message) {
-        // todo alert in here
-    }
-
-    @Override
-    public void loginCancelled(String message) {
-
+        showProgress(false);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(R.string.refresh);
+        dialog.setMessage(message);
+        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                goToMainActivity();
+            }
+        });
+        dialog.show();
     }
 
     public static class TabListener<T extends Fragment> implements ActionBar.TabListener {

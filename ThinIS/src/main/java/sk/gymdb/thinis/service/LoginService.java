@@ -140,6 +140,7 @@ public class LoginService extends AsyncTask<String, Void, Object> {
                     SharedPreferences.Editor edit = prefs.edit();
                     edit.putString("name", name);
                     edit.putString("grades", grades);
+                    // might be need to add also username and login
                     edit.commit();
                     Log.i(TAG, "Successful login");
                     loginDelegate.loginSuccessful(name);
