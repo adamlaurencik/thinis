@@ -16,6 +16,7 @@
 
     <string name="login">Prihlásenie</string>
     <string name="settings">Nastavenia</string>
+    <string name="no_credentials_found_proceed_to_menu">Nenašli sa žiadne prihlasovacie údaje. Pokračujte na obrazovku prihlásenia pomocou menu.</string>
 
     <array name="clazz">
         <item>Príma</item>
@@ -29,8 +30,8 @@
     </array>
 
     <array name="tabs">
-        <item>Dnes</item>
-        <item>Zajtra</item>
+        <item>Prehľad</item>
+        <item>Aktuality</item>
         <item>Žiacka</item>
     </array>
 

@@ -84,7 +84,6 @@ public class LoginActivity extends Activity implements LoginDelegate {
         });
 
         mAuthTask = new LoginService(getApplicationContext());
-        mAuthTask.setLoginDelegate(this);
 
     }
 
@@ -102,9 +101,15 @@ public class LoginActivity extends Activity implements LoginDelegate {
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
-        if (mAuthTask.getStatus() == AsyncTask.Status.RUNNING) {
-            return;
+        if (mAuthTask != null) {
+            if (mAuthTask.getStatus() == AsyncTask.Status.RUNNING) {
+                return;
+            } else {
+                mAuthTask = new LoginService(getApplicationContext());
+            }
         }
+
+        mAuthTask.setLoginDelegate(this);
 
         // Reset errors.
         mEmailView.setError(null);
@@ -197,7 +202,7 @@ public class LoginActivity extends Activity implements LoginDelegate {
     @Override
     public void loginSuccessful(String output) {
         showProgress(false);
-        goToMainActivity();
+        goToHomeActivity();
     }
 
     @Override
@@ -213,7 +218,13 @@ public class LoginActivity extends Activity implements LoginDelegate {
         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                goToMainActivity();
+
+            }
+        });
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                goToHomeActivity();
             }
         });
         dialog.show();
@@ -225,8 +236,8 @@ public class LoginActivity extends Activity implements LoginDelegate {
         showProgress(false);
     }
 
-    public void goToMainActivity() {
-        Intent activityChangeIntent = new Intent(LoginActivity.this, MainActivity.class);
+    public void goToHomeActivity() {
+        Intent activityChangeIntent = new Intent(LoginActivity.this, HomeActivity.class);
         LoginActivity.this.startActivity(activityChangeIntent);
     }
 }

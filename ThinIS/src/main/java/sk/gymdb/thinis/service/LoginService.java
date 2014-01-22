@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Properties;
 
 import sk.gymdb.thinis.R;
-import sk.gymdb.thinis.delegate.GradesDelegate;
 import sk.gymdb.thinis.delegate.LoginDelegate;
 import sk.gymdb.thinis.model.pojo.UserInfo;
 
@@ -42,7 +41,6 @@ public class LoginService extends AsyncTask<String, Void, Object> {
     private final Gson gson;
     private final NetworkService networkService;
     private LoginDelegate loginDelegate;
-    private GradesDelegate gradesDelegate;
 
     /**
      * this is private class just to let onPostExecute what might have happened during run of
@@ -62,6 +60,10 @@ public class LoginService extends AsyncTask<String, Void, Object> {
     protected Object doInBackground(String... params) {
         if (!networkService.isNetworkConnected()) {
             return LoginResult.NO_NETWORK_CONNECTION;
+        }
+        if (loginDelegate == null) {
+            Log.e(TAG, "Misconfiguration ...");
+            return LoginResult.UNEXPECTED_ERROR;
         }
         HttpResponse response;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -124,7 +126,7 @@ public class LoginService extends AsyncTask<String, Void, Object> {
                 loginDelegate.loginUnsuccessful(context.getString(R.string.server_unavailable));
             }
         } else {
-            UserInfo info = new UserInfo();
+            UserInfo info = null;
             if (!(o == null)) {
                 try {
                     String sourceString = new String(EntityUtils.toString((BasicManagedEntity) o));
@@ -155,9 +157,5 @@ public class LoginService extends AsyncTask<String, Void, Object> {
 
     public void setLoginDelegate(LoginDelegate delegate) {
         this.loginDelegate = delegate;
-    }
-
-    public void setGradesDelegate(GradesDelegate delegate) {
-        this.gradesDelegate = delegate;
     }
 }

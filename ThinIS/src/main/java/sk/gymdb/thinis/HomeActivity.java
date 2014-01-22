@@ -8,15 +8,17 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import sk.gymdb.thinis.delegate.GradesDelegate;
+import sk.gymdb.thinis.delegate.LoginDelegate;
 import sk.gymdb.thinis.fragment.DayOverviewFragment;
 import sk.gymdb.thinis.fragment.GradesOverviewFragment;
 import sk.gymdb.thinis.service.LoginService;
+import sk.gymdb.thinis.utils.LoginUtils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,7 +26,7 @@ import sk.gymdb.thinis.service.LoginService;
  * Date: 15.1.2014
  * Time: 16:59
  */
-public class HomeActivity extends Activity implements GradesDelegate {
+public class HomeActivity extends Activity implements LoginDelegate {
 
 
     private Menu actionBarMenu;
@@ -35,7 +37,6 @@ public class HomeActivity extends Activity implements GradesDelegate {
         setContentView(R.layout.activity_home);
 
         loginService = new LoginService(getApplicationContext());
-        loginService.setGradesDelegate(this);
 
         Resources res = getResources();
         String[] tabs = res.getStringArray(R.array.tabs);
@@ -74,7 +75,7 @@ public class HomeActivity extends Activity implements GradesDelegate {
         switch (item.getItemId()) {
             case R.id.menu_item_refresh:
                 showProgress(true);
-                loginService.execute();
+                refreshGrades();
                 return true;
             case R.id.menu_item_login:
                 activityChangeIntent = new Intent(HomeActivity.this, LoginActivity.class);
@@ -86,6 +87,31 @@ public class HomeActivity extends Activity implements GradesDelegate {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void refreshGrades() {
+        if (LoginUtils.credentialsAvailable(getApplicationContext())) {
+            if (loginService != null) {
+                if (loginService.getStatus() == AsyncTask.Status.RUNNING) {
+                    return;
+                } else {
+                    loginService = new LoginService(getApplicationContext());
+                }
+            }
+            loginService.setLoginDelegate(this);
+            loginService.execute();
+        } else {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle(R.string.credentials);
+            dialog.setMessage(R.string.no_credentials_found_proceed_to_menu);
+            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {}
+            });
+            showProgress(false);
+            dialog.show();
+        }
+
     }
 
     public void showProgress(final boolean refreshing) {
@@ -103,13 +129,13 @@ public class HomeActivity extends Activity implements GradesDelegate {
     }
 
     @Override
-    public void refreshSuccessful(String message) {
+    public void loginSuccessful(String message) {
         showProgress(false);
         // todo refresh grades overview fragment
     }
 
     @Override
-    public void refreshUnsuccessful(String message) {
+    public void loginUnsuccessful(String message) {
         showProgress(false);
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(R.string.refresh);
@@ -117,10 +143,15 @@ public class HomeActivity extends Activity implements GradesDelegate {
         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-//                goToMainActivity();
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void loginCancelled(String message) {
+        showProgress(false);
+        // nothing happens here
     }
 
     public static class TabListener<T extends Fragment> implements ActionBar.TabListener {
