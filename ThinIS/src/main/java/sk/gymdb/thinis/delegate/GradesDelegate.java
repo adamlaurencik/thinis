@@ -5,6 +5,8 @@ package sk.gymdb.thinis.delegate;
  */
 public interface GradesDelegate {
 
-    void refreshSuccessful(String output);
+    void refreshSuccessful(String message);
+
+    void refreshUnsuccessful(String message);
 
 }

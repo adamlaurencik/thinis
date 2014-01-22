@@ -11,8 +11,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import sk.gymdb.thinis.delegate.GradesDelegate;
+import sk.gymdb.thinis.delegate.LoginDelegate;
 import sk.gymdb.thinis.fragment.DayOverviewFragment;
 import sk.gymdb.thinis.fragment.GradesOverviewFragment;
+import sk.gymdb.thinis.service.LoginService;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,16 +23,22 @@ import sk.gymdb.thinis.fragment.GradesOverviewFragment;
  * Date: 15.1.2014
  * Time: 16:59
  */
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements GradesDelegate, LoginDelegate {
 
 
     private ActionBar actionBar;
     private Resources res;
     private String[] tabs;
+    private Menu actionBarMenu;
+    private LoginService loginService;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        loginService = new LoginService(getApplicationContext());
+        loginService.setGradesDelegate(this);
+        loginService.setLoginDelegate(this);
 
         res = getResources();
         tabs = res.getStringArray(R.array.tabs);
@@ -46,35 +55,80 @@ public class HomeActivity extends Activity {
                 .setTabListener(new TabListener(this, tabs[1], DayOverviewFragment.class)));
         actionBar.addTab(actionBar.newTab().setText(tabs[2])
                 .setTabListener(new TabListener(this, tabs[2], GradesOverviewFragment.class)));
-
-
-        /**
-         * on swiping the viewpager make respective tab selected
-         * */
-//        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                on changing the page
-//                make respected tab selected
-//                actionBar.setSelectedNavigationItem(position);
-//            }
-//
-//            @Override
-//            public void onPageScrolled(int arg0, float arg1, int arg2) {
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int arg0) {
-//            }
-//        });
-//
-//        if (savedInstanceState != null) {
-//            actionBar.setSelectedNavigationItem(savedInstanceState.getInt("tab", 0));
-//        }
-//
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("tab", getActionBar().getSelectedNavigationIndex());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.actionBarMenu = menu;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent activityChangeIntent;
+        switch (item.getItemId()) {
+            case R.id.menu_item_refresh:
+                isRefreshingState(true);
+                loginService.execute();
+                return true;
+            case R.id.menu_item_login:
+                activityChangeIntent = new Intent(HomeActivity.this, LoginActivity.class);
+                HomeActivity.this.startActivity(activityChangeIntent);
+                return true;
+            case R.id.menu_item_settings:
+                activityChangeIntent = new Intent(HomeActivity.this, SettingsActivity.class);
+                HomeActivity.this.startActivity(activityChangeIntent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void isRefreshingState(final boolean refreshing) {
+        if (this.actionBarMenu != null) {
+            final MenuItem refreshItem = actionBarMenu
+                    .findItem(R.id.menu_item_refresh);
+            if (refreshItem != null) {
+                if (refreshing) {
+                    refreshItem.setActionView(R.layout.layout_action_bar_progress);
+                } else {
+                    refreshItem.setActionView(null);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void refreshSuccessful(String message) {
+        isRefreshingState(false);
+    }
+
+    @Override
+    public void refreshUnsuccessful(String message) {
+        // todo alert in here
+    }
+
+    @Override
+    public void loginSuccessful(String message) {
+        // nothing happens here
+    }
+
+    @Override
+    public void loginUnsuccessful(String message) {
+        // todo alert in here
+    }
+
+    @Override
+    public void loginCancelled(String message) {
+
+    }
 
     public static class TabListener<T extends Fragment> implements ActionBar.TabListener {
         private final Activity mActivity;
@@ -122,53 +176,4 @@ public class HomeActivity extends Activity {
         public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
         }
     }
-
-
-// this is later
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("tab", getActionBar().getSelectedNavigationIndex());
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent activityChangeIntent;
-        switch (item.getItemId()) {
-            case R.id.menu_item_refresh:
-                // todo implement refresh
-                return true;
-            case R.id.menu_item_login:
-                activityChangeIntent = new Intent(HomeActivity.this, LoginActivity.class);
-                HomeActivity.this.startActivity(activityChangeIntent);
-                return true;
-            case R.id.menu_item_settings:
-                activityChangeIntent = new Intent(HomeActivity.this, SettingsActivity.class);
-                HomeActivity.this.startActivity(activityChangeIntent);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-//    public void setRefreshActionButtonState(final boolean refreshing) {
-//        if (this.actionBarMenu != null) {
-//            final MenuItem refreshItem = actionBarMenu
-//                    .findItem(R.id.airport_menuRefresh);
-//            if (refreshItem != null) {
-//                if (refreshing) {
-//                    refreshItem.setActionView(R.layout.layout_action_bar_progress);
-//                } else {
-//                    refreshItem.setActionView(null);
-//                }
-//            }
-//        }
-//    }
 }
