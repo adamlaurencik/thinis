@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -14,7 +16,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import sk.gymdb.thinis.delegate.LoginDelegate;
 import sk.gymdb.thinis.service.LoginService;
@@ -188,18 +189,32 @@ public class LoginActivity extends Activity implements LoginDelegate {
     @Override
     public void loginSuccessful(String output) {
         showProgress(false);
-        Intent activityChangeIntent = new Intent(LoginActivity.this, MainActivity.class);
-        LoginActivity.this.startActivity(activityChangeIntent);
+        goToMainActivity();
     }
 
     @Override
-    public void loginUnsuccessful(String output) {
+    public void loginUnsuccessful(String message) {
         showProgress(false);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(R.string.credentials);
+        dialog.setMessage(message);
+        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                goToMainActivity();
+            }
+        });
+        dialog.show();
     }
 
     @Override
     public void loginCancelled(String message) {
         //todo we need to implement cancel button
         showProgress(false);
+    }
+
+    public void goToMainActivity() {
+        Intent activityChangeIntent = new Intent(LoginActivity.this, MainActivity.class);
+        LoginActivity.this.startActivity(activityChangeIntent);
     }
 }

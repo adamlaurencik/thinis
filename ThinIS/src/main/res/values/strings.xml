@@ -10,6 +10,12 @@
     <string name="refresh">Obnoviť</string>
     <string name="unexpected_error">Vyskytla sa závažná chyba pre ktorú aplikácia nemôže pokračovať. Kontaktujte, prosím, čo najskôr technickú podporu.</string>
     <string name="wrong_login_credentials">Nesprávne prihlasovacie údaje</string>
+    <string name="unsupported_server_relation">Verzia servera nezodpovedá požadovanej verzii</string>
+    <string name="server_unavailable">Server nie je dostupný</string>
+    <string name="network_unavailable">Nie ste pripojený k internetu</string>
+
+    <string name="login">Prihlásenie</string>
+    <string name="settings">Nastavenia</string>
 
     <array name="clazz">
         <item>Príma</item>

@@ -6,7 +6,7 @@
     <string name="prompt_email">Meno</string>
     <string name="prompt_password">Heslo</string>
 
-    <string name="action_sign_in_register"><b>Sign in</b> or register</string>
+    <string name="action_sign_in_register"><b>Prihlásiť</b></string>
     <string name="action_sign_in_short">Prihlásiť</string>
 
     <string name="action_forgot_password">Obnoviť heslo</string>

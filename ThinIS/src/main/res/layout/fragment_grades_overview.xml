@@ -4,5 +4,5 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#000000"
-    android:id="@+id/table">
+    android:id="@+id/grades_table">
 </TableLayout>

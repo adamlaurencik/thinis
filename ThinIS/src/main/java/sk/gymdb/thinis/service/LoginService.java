@@ -1,9 +1,6 @@
 package sk.gymdb.thinis.service;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
@@ -29,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import sk.gymdb.thinis.LoginActivity;
 import sk.gymdb.thinis.R;
 import sk.gymdb.thinis.delegate.GradesDelegate;
 import sk.gymdb.thinis.delegate.LoginDelegate;
@@ -44,17 +40,30 @@ public class LoginService extends AsyncTask<String, Void, Object> {
 
     private final Context context;
     private final Gson gson;
+    private final NetworkService networkService;
     private LoginDelegate loginDelegate;
     private GradesDelegate gradesDelegate;
+
+    /**
+     * this is private class just to let onPostExecute what might have happened during run of
+     * background task
+     */
+    private enum LoginResult {
+        UNEXPECTED_ERROR, UNSUPPORTED_SERVER_RELATION, SERVER_UNAVAILABLE, NO_NETWORK_CONNECTION;
+    }
 
     public LoginService(Context context) {
         this.context = context;
         gson = new Gson();
+        networkService = new NetworkService(context);
     }
 
     @Override
     protected Object doInBackground(String... params) {
-        HttpResponse response = null;
+        if (!networkService.isNetworkConnected()) {
+            return LoginResult.NO_NETWORK_CONNECTION;
+        }
+        HttpResponse response;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String username = prefs.getString("username", "");
         String password = prefs.getString("password", "");
@@ -67,6 +76,8 @@ public class LoginService extends AsyncTask<String, Void, Object> {
                 props.load(assetManager.open("application.properties"));
             } catch (IOException e) {
                 Log.e(TAG, "Unable to load application.properties");
+                return LoginResult.UNEXPECTED_ERROR;
+//                loginDelegate.loginUnsuccessful(context.getString(R.string.unexpected_error));
             }
             HttpPost post = new HttpPost(props.getProperty("server.url") + "/login");
             List<NameValuePair> pairList = new ArrayList<NameValuePair>();
@@ -76,11 +87,15 @@ public class LoginService extends AsyncTask<String, Void, Object> {
                 post.setEntity(new UrlEncodedFormEntity(pairList));
             } catch (UnsupportedEncodingException e) {
                 Log.e(TAG, "Unsupported encoding for passed parameters");
+                return LoginResult.UNSUPPORTED_SERVER_RELATION;
+//                loginDelegate.loginUnsuccessful(context.getString(R.string.unsupported_server_relation));
             }
             try {
                 response = client.execute(post);
             } catch (IOException e) {
                 Log.e(TAG, "Unable to execute post request");
+                return LoginResult.SERVER_UNAVAILABLE;
+//                loginDelegate.loginUnsuccessful(context.getString(R.string.server_unavailable));
             }
             entity = response.getEntity();
         }
@@ -97,28 +112,41 @@ public class LoginService extends AsyncTask<String, Void, Object> {
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
-        UserInfo info = new UserInfo();
-        if (!(o == null)) {
-            try {
-                String sourceString = new String(EntityUtils.toString((BasicManagedEntity) o));
-                info = gson.fromJson(sourceString, UserInfo.class);
-            } catch (IOException e) {
-                loginDelegate.loginUnsuccessful(context.getString(R.string.wrong_login_credentials));
-                Log.e(TAG, "Login attempt was not successful due to exception");
-            }
-            if (info != null) {
-                String name = info.getName();
-                String grades = gson.toJson(info.getEvaluation());
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-                SharedPreferences.Editor edit = prefs.edit();
-                edit.putString("name", name);
-                edit.putString("grades", grades);
-                edit.commit();
-                Log.i(TAG, "Successful login");
-                loginDelegate.loginSuccessful(name);
+        if (o instanceof LoginResult) {
+            LoginResult result = (LoginResult) o;
+            if (result.equals(LoginResult.UNEXPECTED_ERROR)) {
+                loginDelegate.loginUnsuccessful(context.getString(R.string.unexpected_error));
+            } else if (result.equals(LoginResult.UNSUPPORTED_SERVER_RELATION)) {
+                loginDelegate.loginUnsuccessful(context.getString(R.string.unsupported_server_relation));
+            } else if (result.equals(LoginResult.NO_NETWORK_CONNECTION)) {
+                loginDelegate.loginUnsuccessful(context.getString(R.string.network_unavailable));
             } else {
-                loginDelegate.loginUnsuccessful(context.getString(R.string.wrong_login_credentials));
-                Log.i(TAG, "Login attempt was not successful due to wrong credentials");
+                loginDelegate.loginUnsuccessful(context.getString(R.string.server_unavailable));
+            }
+        } else {
+            UserInfo info = new UserInfo();
+            if (!(o == null)) {
+                try {
+                    String sourceString = new String(EntityUtils.toString((BasicManagedEntity) o));
+                    info = gson.fromJson(sourceString, UserInfo.class);
+                } catch (IOException e) {
+                    loginDelegate.loginUnsuccessful(context.getString(R.string.wrong_login_credentials));
+                    Log.e(TAG, "Login attempt was not successful due to exception");
+                }
+                if (info != null) {
+                    String name = info.getName();
+                    String grades = gson.toJson(info.getEvaluation());
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences.Editor edit = prefs.edit();
+                    edit.putString("name", name);
+                    edit.putString("grades", grades);
+                    edit.commit();
+                    Log.i(TAG, "Successful login");
+                    loginDelegate.loginSuccessful(name);
+                } else {
+                    loginDelegate.loginUnsuccessful(context.getString(R.string.wrong_login_credentials));
+                    Log.i(TAG, "Login attempt was not successful due to wrong credentials");
+                }
             }
         }
     }

@@ -24,7 +24,7 @@ public class LoginUtils {
     public static boolean credentialsAvailable(Context context) {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (prefs.getString("username", "").isEmpty() || prefs.getString("password", "").isEmpty()) {
+        if (!prefs.getString("username", "").equals("") && !prefs.getString("password", "").equals("")) {
             Log.i(TAG, "None credentials found");
             return false;
         }

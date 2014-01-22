@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,15 +23,9 @@ import sk.gymdb.thinis.fragment.GradesOverviewFragment;
 public class HomeActivity extends Activity {
 
 
-    //    private ViewPager viewPager;
-//    private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
     private Resources res;
     private String[] tabs;
-    private Menu actionBarMenu;
-//    private Fragment currentFragment;
-//    private List<Class<? extends Fragment>> fragments = new ArrayList<Class<? extends Fragment>>();
-
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,26 +35,17 @@ public class HomeActivity extends Activity {
         tabs = res.getStringArray(R.array.tabs);
 
         // Initilization
-//        viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getActionBar();
-//        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
-
-//        viewPager.setAdapter(mAdapter);
         actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        // Adding Tabs
-//        for (String tab_name : tabs) {
-//            actionBar.addTab(actionBar.newTab().setText(tab_name)
-//                    .setTabListener(new TabListener(getApplicationContext(), )));
-//        }
-
+        // tabs
+        actionBar.addTab(actionBar.newTab().setText(tabs[0])
+                .setTabListener(new TabListener(this, tabs[0], DayOverviewFragment.class)));
         actionBar.addTab(actionBar.newTab().setText(tabs[1])
                 .setTabListener(new TabListener(this, tabs[1], DayOverviewFragment.class)));
         actionBar.addTab(actionBar.newTab().setText(tabs[2])
-                .setTabListener(new TabListener(this, tabs[2], DayOverviewFragment.class)));
-        actionBar.addTab(actionBar.newTab().setText(tabs[3])
-                .setTabListener(new TabListener(this, tabs[3], GradesOverviewFragment.class)));
+                .setTabListener(new TabListener(this, tabs[2], GradesOverviewFragment.class)));
 
 
         /**
@@ -134,7 +120,6 @@ public class HomeActivity extends Activity {
         }
 
         public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-//            Toast.makeText(mActivity, "Reselected!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -147,31 +132,8 @@ public class HomeActivity extends Activity {
         outState.putInt("tab", getActionBar().getSelectedNavigationIndex());
     }
 
-//    @Override
-//    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-//        if (currentFragment == null) {
-//            currentFragment = Fragment.instantiate(this, getClass().getName(), null);
-//            ft.add(android.R.id.content, currentFragment, null);
-//        } else {
-//            ft.attach(currentFragment);
-//        }
-//    }
-//
-//    @Override
-//    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-//        if (currentFragment != null) {
-//            ft.detach(currentFragment);
-//        }
-//    }
-//
-//    @Override
-//    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-//
-//    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.actionBarMenu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar, menu);
         return super.onCreateOptionsMenu(menu);
@@ -179,10 +141,18 @@ public class HomeActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent activityChangeIntent;
         switch (item.getItemId()) {
-            case R.id.action_bar:
-
-                //todo Complete with your code
+            case R.id.menu_item_refresh:
+                // todo implement refresh
+                return true;
+            case R.id.menu_item_login:
+                activityChangeIntent = new Intent(HomeActivity.this, LoginActivity.class);
+                HomeActivity.this.startActivity(activityChangeIntent);
+                return true;
+            case R.id.menu_item_settings:
+                activityChangeIntent = new Intent(HomeActivity.this, SettingsActivity.class);
+                HomeActivity.this.startActivity(activityChangeIntent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
