@@ -1,5 +1,3 @@
-In intelij idea download JetGradle plugin.
-Download gradle (at least v. 1.8 is needed).
-Add gradle location in intelij.
-Define android SDK.
-Install android support repository from sdk manager.
+ThinIs is an application for android mobile phones.
+
+It servers as client application for school webpage to acquire news, grades and substitutions.
