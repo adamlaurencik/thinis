@@ -3,10 +3,12 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        classpath 'org.batcha.gradle.plugins:git-dependencies:0.1'
         classpath 'com.android.tools.build:gradle:0.7.+'
     }
 }
 apply plugin: 'android'
+apply plugin: 'git-dependencies'
 
 repositories {
     mavenCentral()
@@ -35,4 +37,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:18.0.+'
     compile 'org.jsoup:jsoup:1.6.1'
     compile 'com.android.support:support-v4:18.0.0'
+//    compile('org.github.johnkil:SideNavigation:1.0.0').ext.git = 'https://github.com/johnkil/SideNavigation.git'
+
 }
