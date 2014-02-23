@@ -15,6 +15,7 @@ This application was developed in gymdb.sk
 2. Client
   * android client application with access to substitutions and evaluation in school.
 
+------
 ##How to build the project
 <b>Server - ThinIs-GCM-Server</b>
 In order to run server you need to setup application at google cloud console (https://cloud.google.com/console). Create application and gain api key for android access to Google Cloud Messaging services. After that build and deploy application to your own apache tomcat instance.
