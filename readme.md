@@ -8,10 +8,10 @@ Requires android v19
 ##Project structure
 
 1. Server
-..* the purpose of server is to push notifications to client android application on event.
-..* proxy trafic for login
+  * the purpose of server is to push notifications to client android application on event.
+  * proxy trafic for login
 2. Client
-..* android client application with access to substitutions and evaluation in school.
+  * android client application with access to substitutions and evaluation in school.
 
 ##How to build the project
 
