@@ -14,13 +14,17 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.BasicManagedEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +73,8 @@ public class LoginService extends AsyncTask<String, Void, Object> {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String username = prefs.getString("username", "");
         String password = prefs.getString("password", "");
+//        String username = "AdamLaurencik";
+//        String password = "970520/4960";
         AssetManager assetManager = context.getAssets();
         HttpEntity entity = null;
         if (!(username.equals("") || password.equals(""))) {
@@ -81,21 +87,13 @@ public class LoginService extends AsyncTask<String, Void, Object> {
                 return LoginResult.UNEXPECTED_ERROR;
 //                loginDelegate.loginUnsuccessful(context.getString(R.string.unexpected_error));
             }
-            HttpPost post = new HttpPost(props.getProperty("server.url") + "/login");
-            List<NameValuePair> pairList = new ArrayList<NameValuePair>();
-            pairList.add(new BasicNameValuePair("u", username));
-            pairList.add(new BasicNameValuePair("p", password));
+            HttpGet get = new HttpGet(props.getProperty("server.url") + "/login?u=" + username + "&p=" + password);
+
             try {
-                post.setEntity(new UrlEncodedFormEntity(pairList));
-            } catch (UnsupportedEncodingException e) {
-                Log.e(TAG, "Unsupported encoding for passed parameters");
-                return LoginResult.UNSUPPORTED_SERVER_RELATION;
-//                loginDelegate.loginUnsuccessful(context.getString(R.string.unsupported_server_relation));
-            }
-            try {
-                response = client.execute(post);
+                response = client.execute(get);
             } catch (IOException e) {
-                Log.e(TAG, "Unable to execute post request");
+                Log.e(TAG, "Unable to execute get request");
+                e.printStackTrace();
                 return LoginResult.SERVER_UNAVAILABLE;
 //                loginDelegate.loginUnsuccessful(context.getString(R.string.server_unavailable));
             }
@@ -129,9 +127,17 @@ public class LoginService extends AsyncTask<String, Void, Object> {
             UserInfo info = null;
             if (!(o == null)) {
                 try {
-                    String sourceString = new String(EntityUtils.toString((BasicManagedEntity) o));
-                    info = gson.fromJson(sourceString, UserInfo.class);
-                } catch (IOException e) {
+                    System.out.println("here:");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(((BasicManagedEntity) o).getContent()));
+                    StringBuffer sourceString = new StringBuffer();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sourceString.append(line);
+                    }
+                    System.out.println("here2:" + sourceString.toString());
+                    info = gson.fromJson(sourceString.toString(), UserInfo.class);
+                } catch (Exception e) {
+                    e.printStackTrace();
                     loginDelegate.loginUnsuccessful(context.getString(R.string.wrong_login_credentials));
                     Log.e(TAG, "Login attempt was not successful due to exception");
                 }

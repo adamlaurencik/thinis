@@ -22,9 +22,9 @@ public class NetworkService {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         if (ni != null) {
-            Log.e(TAG, "No internet connection");
             return true;
         }
+        Log.e(TAG, "No internet connection");
         return false;
     }
 

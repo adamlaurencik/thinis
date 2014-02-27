@@ -76,6 +76,11 @@ public class LoginActivity extends Activity implements LoginDelegate {
         mLoginStatusView = findViewById(R.id.login_status);
         mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
+        EditText email = (EditText) findViewById(R.id.email);
+        email.setText("AdamLaurencik");
+        EditText pass = (EditText) findViewById(R.id.password);
+        pass.setText("970520/4960");
+
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

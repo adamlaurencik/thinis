@@ -45,7 +45,7 @@ public class GcmService {
     private String regId;
 
 
-    public GcmService(FragmentActivity caller) throws GcmServiceException {
+    public GcmService(Activity caller) throws GcmServiceException {
         context = caller.getApplicationContext();
 
         Properties properties = new Properties();
