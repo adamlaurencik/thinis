@@ -1,7 +1,7 @@
 #ThinIs
 ThinIs is an application for android cell phones.
 
-It serves as client application for school webpage to acquire news, grades and substitutions.
+It serves as client application for school webpage to acquire grades and substitutions.
 
 Requires android v19.
 

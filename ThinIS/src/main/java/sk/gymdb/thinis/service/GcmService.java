@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -43,11 +42,12 @@ public class GcmService {
     private Context context;
     private GoogleCloudMessaging gcm;
     private String regId;
+    private String clazz;
 
 
-    public GcmService(Activity caller) throws GcmServiceException {
+    public GcmService(Activity caller, String clazz) throws GcmServiceException {
         context = caller.getApplicationContext();
-
+        this.clazz= clazz;
         Properties properties = new Properties();
         try {
             InputStream inputStream = context.getAssets().open("application.properties");
@@ -64,6 +64,10 @@ public class GcmService {
             regId = getRegistrationId(context);
 
             if (regId == null) {
+                registerInBackground();
+            }
+            else{
+                // todo: Unregister
                 registerInBackground();
             }
         } else {
@@ -149,8 +153,10 @@ public class GcmService {
         try {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
             nameValuePairs.add(new BasicNameValuePair("regId", regId));
+            nameValuePairs.add(new BasicNameValuePair("regClazz", clazz));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             httpclient.execute(httppost);
+            System.out.println("Zaregistrovane");
         } catch (Exception ex) {
             throw new GcmServiceException(ex);
         }
@@ -179,11 +185,15 @@ public class GcmService {
         @Override
         protected Object doInBackground(String... params) {
             String msg = null;
+            Boolean succesful= false;
+            for (int i=1;i<5 || succesful; i++){
             try {
                 if (gcm == null) {
                     gcm = GoogleCloudMessaging.getInstance(context);
                 }
+
                 regId = gcm.register(senderId);
+
 //                msg = "Device registered, registration ID=" + regId;
 
                 // You should send the registration ID to your server over HTTP,
@@ -198,12 +208,13 @@ public class GcmService {
 
                 // Persist the regID - no need to register again.
                 storeRegistrationId(context, regId);
+                succesful=true;
             } catch (Exception ex) {
                 msg = "Error :" + ex.getMessage();
                 // If there is an error, don't just keep trying to register.
                 // Require the user to click a button again, or perform
                 // exponential back-off.
-            }
+            }}
             return msg;
         }
 

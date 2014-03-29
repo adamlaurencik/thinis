@@ -8,6 +8,8 @@ import sk.gymdb.thinis.gcm.web.Registration;
 import sk.gymdb.thinis.service.SubstitutionService;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.http.entity.StringEntity;
 
 /**
  * Created by matejkobza on 21.12.2013.
@@ -54,8 +57,7 @@ public class SubstitutionNotificator implements Runnable {
         try {
             substitutions = service.findSubstitutions();
         } catch (IOException e) {
-            e.printStackTrace();
-        }
+            e.printStackTrace();        }
         if (substitutions != null) {
             if (!substitutions.isEmpty()) {
                 for (String clazz : substitutions.keySet()) {
@@ -102,7 +104,12 @@ public class SubstitutionNotificator implements Runnable {
 
             public void run() {
                 Message.Builder messageBuilder = new Message.Builder();
-                messageBuilder.addData("Upozornenie", message);
+                System.out.println("SPRAVA: "+ message);
+                try {
+                    messageBuilder.addData("SPRAVA", URLEncoder.encode(message,"UTF-8"));
+                } catch (UnsupportedEncodingException ex) {
+                    Logger.getLogger(SubstitutionNotificator.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 Message message = messageBuilder.build();
                 MulticastResult multicastResult;
                 try {

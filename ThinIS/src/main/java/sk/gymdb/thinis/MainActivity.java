@@ -1,7 +1,6 @@
 package sk.gymdb.thinis;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +9,12 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import sk.gymdb.thinis.model.pojo.Substitution;
 import sk.gymdb.thinis.utils.LoginUtils;
 
 /**
@@ -33,7 +38,20 @@ public class MainActivity extends FragmentActivity {
         checkCredentials();
 
         proceed();
+
+        chceckSubstitutions();
     }
+
+    private void chceckSubstitutions() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getString("substitutions", "").equals("")) {
+           Set<Substitution> newSubstitutions = new HashSet<Substitution>();
+            Gson gson= new Gson();
+
+        }
+
+    }
+
 
     private void proceed() {
         if (showDialogs == 0) {

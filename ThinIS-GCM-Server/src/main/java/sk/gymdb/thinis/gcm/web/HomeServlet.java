@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import sk.gymdb.thinis.web.SubstitutionNotificator;
 
 /**
  * Servlet that adds display number of devices and button to send a message.
@@ -61,6 +62,8 @@ public class HomeServlet extends BaseServlet {
             out.print("</form>");
         }
         out.print("</body></html>");
+        SubstitutionNotificator notificator= new SubstitutionNotificator();
+        notificator.run();
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 

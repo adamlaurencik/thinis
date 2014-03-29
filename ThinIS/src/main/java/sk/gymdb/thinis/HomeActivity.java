@@ -14,9 +14,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 import sk.gymdb.thinis.delegate.LoginDelegate;
-import sk.gymdb.thinis.fragment.DayOverviewFragment;
 import sk.gymdb.thinis.fragment.GradesOverviewFragment;
+import sk.gymdb.thinis.fragment.NextDayOverviewFragment;
+import sk.gymdb.thinis.fragment.TodayOverviewFragment;
 import sk.gymdb.thinis.service.LoginService;
 import sk.gymdb.thinis.utils.LoginUtils;
 
@@ -40,6 +45,23 @@ public class HomeActivity extends Activity implements LoginDelegate {
 
         Resources res = getResources();
         String[] tabs = res.getStringArray(R.array.tabs);
+        Calendar cal = Calendar.getInstance();
+        if (cal.get(Calendar.DAY_OF_WEEK) == 7) { // friday we need 2 more days
+            cal.add(Calendar.DAY_OF_YEAR, 2);
+        } else if (cal.get(Calendar.DAY_OF_WEEK) == 1) { // saturday we still need one more
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        String tab1=new SimpleDateFormat("EEEE", Locale.getDefault()).format(cal.getTimeInMillis());
+        cal.add(Calendar.DAY_OF_YEAR, 1); // tommorow
+        if (cal.get(Calendar.DAY_OF_WEEK) == 7) { // friday we need 2 more days
+            cal.add(Calendar.DAY_OF_YEAR, 2);
+        } else if (cal.get(Calendar.DAY_OF_WEEK) == 1) { // saturday we still need one more
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        String tab2=new SimpleDateFormat("EEEE", Locale.getDefault()).format(cal.getTimeInMillis());
+        tab1=tab1.substring(0, 1).toUpperCase() + tab1.substring(1);
+        tab2=tab2.substring(0, 1).toUpperCase() + tab2.substring(1);
+
 
         // Initilization
         ActionBar actionBar = getActionBar();
@@ -47,10 +69,10 @@ public class HomeActivity extends Activity implements LoginDelegate {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // tabs
-        actionBar.addTab(actionBar.newTab().setText(tabs[0])
-                .setTabListener(new TabListener(this, tabs[0], DayOverviewFragment.class)));
-        actionBar.addTab(actionBar.newTab().setText(tabs[1])
-                .setTabListener(new TabListener(this, tabs[1], DayOverviewFragment.class)));
+        actionBar.addTab(actionBar.newTab().setText(tab1)
+                .setTabListener(new TabListener(this, tabs[0], TodayOverviewFragment.class)));
+        actionBar.addTab(actionBar.newTab().setText(tab2)
+                .setTabListener(new TabListener(this, tabs[2], NextDayOverviewFragment.class)));
         actionBar.addTab(actionBar.newTab().setText(tabs[2])
                 .setTabListener(new TabListener(this, tabs[2], GradesOverviewFragment.class)));
     }
@@ -96,6 +118,7 @@ public class HomeActivity extends Activity implements LoginDelegate {
                     return;
                 } else {
                     loginService = new LoginService(getApplicationContext());
+                    loginService.execute();
                 }
             }
             loginService.setLoginDelegate(this);

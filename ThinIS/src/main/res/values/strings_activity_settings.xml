@@ -35,14 +35,14 @@
         <item>4.C</item>
     </string-array>
     <string-array name="pref_list_classes_values">
-        <item>I</item>
-        <item>II</item>
-        <item>III</item>
-        <item>IV</item>
-        <item>V</item>
-        <item>VI</item>
-        <item>VII</item>
-        <item>VIII</item>
+        <item>I.PRÍMA</item>
+        <item>II.SEKUNDA</item>
+        <item>III.TERCIA</item>
+        <item>IV.KVARTA</item>
+        <item>V.KVINTA</item>
+        <item>VI.SEXTA</item>
+        <item>VII.SEPTIMA</item>
+        <item>VIII.OKTÁVA</item>
         <item>1.A</item>
         <item>1.B</item>
         <item>2.A</item>

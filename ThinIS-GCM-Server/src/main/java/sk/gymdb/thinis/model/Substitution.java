@@ -6,7 +6,11 @@
 
 package sk.gymdb.thinis.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Admin
@@ -18,8 +22,23 @@ public class Substitution {
     private String subject;
     private String teacher;
     private String comment;
-    private Boolean odpadne;
+    private String clazz;
+    private Boolean canceled;
+    private Boolean teacherChange;
+    private Boolean subjectChange;
+    private Boolean clazzChange;
+    private Date date;
+    private int ID;
 
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    
     public void setHour(String hour) {
         this.hour = hour;
     }
@@ -69,18 +88,81 @@ public class Substitution {
     }
 
     public void setOdpada(Boolean odpada) {
-        this.odpadne = odpada;
+        this.canceled = odpada;
     }
 
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setCanceled(Boolean canceled) {
+        this.canceled = canceled;
+    }
+
+    public String getClazz() {
+        return clazz;
+    }
+
+    public Boolean isCanceled() {
+        return canceled;
+    }
+
+    public Boolean isClazzChange() {
+        return clazzChange;
+    }
+
+    public Boolean isSubjectChange() {
+        return subjectChange;
+    }
+
+    public Boolean isTeacherChange() {
+        return teacherChange;
+    }
+
+    public void setClazz(String clazz) {
+        this.clazz = clazz;
+    }
+
+    public void setClazzChange(Boolean clazzChange) {
+        this.clazzChange = clazzChange;
+    }
+
+    public void setSubjectChange(Boolean subjectChange) {
+        this.subjectChange = subjectChange;
+    }
+
+    public void setTeacherChange(Boolean teacherChange) {
+        this.teacherChange = teacherChange;
+    }
+    
+    
+    
     @Override
     public String toString() {
-        String out = "";
-        if (odpadne) {
-            out = who + "     " + hour + "    " + subject + "     " + teacher + "     " + comment + "- ODPADNE!<br>";
-        } else {
-            out = who + "     " + hour + "    " + subject + "     " + teacher + "     " + comment + "<br>";
-        }
+        DateFormat dateFormat = new SimpleDateFormat("d. M.");
+        String dateString= dateFormat.format(date);
+        String dayOfWeek= new SimpleDateFormat("EEEE",Locale.getDefault()).format(date);
+        dateString= dateString+ dayOfWeek;
+        String out = "Dňa: "+ dateString ;
+          if (isCanceled()) {
+            out= out+"ti odpadne "+ getHour()+". hodina ( "+ getSubject()+")";
+        } else if(isSubjectChange()) {
+            out= out+" máš "+ getHour()+". hodinu predmet "+getSubject()+" s učiteľom "+getTeacher();
+        } else if(isClazzChange()){
+            out= out+" máš "+ getHour()+". hodinu v učebni "+getClazz();
+        } else if(isTeacherChange()){
+            out= out+" máš "+ getHour()+". hodinu "+getSubject()+" s učiteľom "+getTeacher();
+        } else if(isTeacherChange() && isClazzChange()){
+            out= out+" máš "+ getHour()+". hodinu  "+getSubject()+" s učiteľom "+getTeacher()+" v učebni "+getClazz();
+        } else if(isTeacherChange() && isClazzChange() && isSubjectChange()){
+            out= out+" máš "+ getHour()+". hodinu  "+getSubject()+" s učiteľom "+getTeacher()+" v učebni "+getClazz();
+          }
+           else out= out+" máš "+ getHour()+". hodinu  "+getSubject()+" s učiteľom "+getTeacher()+" v učebni "+getClazz();
+        if(comment!="") out= out+" Poznámka: " + comment;
         return out;
     }
 
@@ -92,7 +174,7 @@ public class Substitution {
         Substitution that = (Substitution) o;
 
         if (!hour.equals(that.hour)) return false;
-        if (odpadne != null ? !odpadne.equals(that.odpadne) : that.odpadne != null) return false;
+        if (canceled != null ? !canceled.equals(that.canceled) : that.canceled != null) return false;
         if (!subject.equals(that.subject)) return false;
         if (!teacher.equals(that.teacher)) return false;
 
@@ -107,7 +189,9 @@ public class Substitution {
         result = 31 * result + hour.hashCode();
         result = 31 * result + subject.hashCode();
         result = 31 * result + teacher.hashCode();
-        result = 31 * result + (odpadne != null ? odpadne.hashCode() : 0);
+        result = 31 * result + (canceled != null ? canceled.hashCode() : 0);
         return result;
     }
+
+    
 }

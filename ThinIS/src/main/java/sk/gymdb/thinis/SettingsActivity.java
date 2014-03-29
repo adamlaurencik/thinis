@@ -1,6 +1,7 @@
 package sk.gymdb.thinis;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -37,12 +38,14 @@ public class SettingsActivity extends PreferenceActivity {
      */
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
     private static Context context;
+    private static Activity activity;
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
         context = getApplicationContext();
+        activity= this;
         setupSimplePreferencesScreen();
     }
 
@@ -78,11 +81,10 @@ public class SettingsActivity extends PreferenceActivity {
         // their values. When their values change, their summaries are updated
         // to reflect the new value, per the Android Design guidelines.
 //        bindPreferenceSummaryToValue(findPreference("example_text"));
-        //the cause of crash
         //bindPreferenceSummaryToValue(findPreference("example_list"));
 //        bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
 //        bindPreferenceSummaryToValue(findPreference("sync_frequency"));
-        bindPreferenceSummaryToValue(findPreference("clazz"));
+          bindPreferenceSummaryToValue(findPreference("clazz"));
     }
 
     /**
@@ -134,6 +136,13 @@ public class SettingsActivity extends PreferenceActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
+            System.out.println(stringValue);
+            System.out.println(preference.getKey());
+            try {
+               GcmService service =new GcmService(activity, stringValue);
+            } catch (GcmServiceException e) {
+                e.printStackTrace();
+            }
 
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
@@ -147,11 +156,7 @@ public class SettingsActivity extends PreferenceActivity {
                                 ? listPreference.getEntries()[index]
                                 : null);
 
-//                try {
-//                    new GcmService(context);
-//                } catch (GcmServiceException e) {
-//                    e.printStackTrace();
-//                }
+
             } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
@@ -199,7 +204,7 @@ public class SettingsActivity extends PreferenceActivity {
             // guidelines.
 //            bindPreferenceSummaryToValue(findPreference("example_text"));
 //            bindPreferenceSummaryToValue(findPreference("example_list"));
-            bindPreferenceSummaryToValue(findPreference("school_class"));
+             bindPreferenceSummaryToValue(findPreference("clazz"));
 
         }
     }

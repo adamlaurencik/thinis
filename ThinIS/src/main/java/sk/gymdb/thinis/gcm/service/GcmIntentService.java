@@ -5,15 +5,29 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.gson.Gson;
 
-import sk.gymdb.thinis.MKActivity;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+
+import sk.gymdb.thinis.HomeActivity;
+import sk.gymdb.thinis.R;
 import sk.gymdb.thinis.gcm.receivers.GcmBroadcastReceiver;
+import sk.gymdb.thinis.model.pojo.Substitution;
+
 
 /**
  * Created by Admin on 11/25/13.
@@ -21,7 +35,7 @@ import sk.gymdb.thinis.gcm.receivers.GcmBroadcastReceiver;
 public class GcmIntentService extends IntentService {
 
     private static final String TAG = "GcmIntentService";
-    public static final int NOTIFICATION_ID = 1;
+    public static int notificationID;
     private NotificationManager mNotificationManager;
     private Context context=this;
 
@@ -54,20 +68,33 @@ public class GcmIntentService extends IntentService {
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.
                     MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                // This loop represents the service doing some work.
-                for (int i=0; i<5; i++) {
-                    Log.i(TAG, "Working... " + (i + 1)
-                            + "/5 @ " + SystemClock.elapsedRealtime());
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        Log.e(TAG, e.getLocalizedMessage());
-                    }
+                Gson gson= new Gson();
+                try {
+                    String jsonString= URLDecoder.decode(extras.getString("SPRAVA"), "UTF-8");
+                Substitution s= gson.fromJson(jsonString, Substitution.class);
+
+                String msg=s.toString();
+                ArrayList<Substitution> newSubstitutions;
+                String jsonSubstitutions;
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                if (prefs.getString("substitutions", "").equals("")) {
+                    newSubstitutions= new ArrayList<Substitution>();
+                }else{
+                    newSubstitutions= gson.fromJson(prefs.getString("substitutions", ""),ArrayList.class);
                 }
-                Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
-                // Post notification of received message.
-                sendNotification("Received: " + extras.toString());
-                Log.i(TAG, "Received: " + extras.toString());
+                newSubstitutions.add(s);
+                SharedPreferences.Editor edit = prefs.edit();
+                edit.putString("substitutions",gson.toJson(newSubstitutions));
+                edit.commit();
+                notificationID=s.getID();
+                sendNotification(msg);
+
+                Log.i(TAG, "Received: " + extras.getString("SPRAVA"));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+
             }
         }
         // Release the wake lock provided by the WakefulBroadcastReceiver.
@@ -82,18 +109,23 @@ public class GcmIntentService extends IntentService {
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MKActivity.class), 0);
-
+                new Intent(this, HomeActivity.class), 0);
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Bitmap icon= BitmapFactory.decodeResource(context.getResources(), R.drawable.notification2);
+        long [] pattern={250,250,250,250};
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                      .setSmallIcon(sk.gymdb.thinis.R.drawable.suplovanie)
-                        .setContentTitle("GCM Notification")
+                      .setSmallIcon(R.drawable.notification)
+                      .setLargeIcon(icon)
+                        .setContentTitle("Suplovanie")
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(msg))
-                        .setContentText(msg);
-
+                        .setContentText(msg)
+                        .setSound(alarmSound)
+                        .setVibrate(pattern)
+                        .setLights(Color.BLUE, 500, 500);
         mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        mNotificationManager.notify(notificationID, mBuilder.build());
 
     }
 }

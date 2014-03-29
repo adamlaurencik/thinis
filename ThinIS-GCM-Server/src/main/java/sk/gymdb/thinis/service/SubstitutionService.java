@@ -1,9 +1,11 @@
 package sk.gymdb.thinis.service;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlDivision;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.google.gson.Gson;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -37,9 +39,9 @@ public class SubstitutionService {
         DateFormat dateFormat = new SimpleDateFormat("d. M.");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, 1); // tommorow
-        if (cal.get(Calendar.DAY_OF_WEEK) == 6) { // friday we need 2 more days
+        if (cal.get(Calendar.DAY_OF_WEEK) == 7) { // friday we need 2 more days
             cal.add(Calendar.DAY_OF_YEAR, 2);
-        } else if (cal.get(Calendar.DAY_OF_WEEK) == 7) { // saturday we still need one more
+        } else if (cal.get(Calendar.DAY_OF_WEEK) == 1) { // saturday we still need one more
             cal.add(Calendar.DAY_OF_YEAR, 1);
         }
 
@@ -50,7 +52,7 @@ public class SubstitutionService {
         for (HtmlAnchor htmlAnchor : anchors) {
             String anchorText = htmlAnchor.asText();
             if (anchorText.contains(tomorrowDateString)) {
-                htmlAnchor.click();
+                page=htmlAnchor.click();
             }
         }
 
@@ -67,9 +69,9 @@ public class SubstitutionService {
         HashSet<Substitution> substitutions = new HashSet<Substitution>();
 
         for (Element tableRow : tableRows) {
-            String subject = tableRow.select("td").get(2).text();
+            String subjectString = tableRow.select("td").get(2).text();
             // if its a dozor like row we dont care
-            if (!subject.trim().equals("Dozor")) {
+            if (!subjectString.trim().equals("Dozor")) {
                 Substitution sub = new Substitution();
                 Element whoTd = tableRow.select("td").first();
                 if (whoTd.select("span[style]").size() > 0) {
@@ -77,20 +79,46 @@ public class SubstitutionService {
                 } else {
                     sub.setOdpada(Boolean.FALSE);
                 }
-
+                
+                if(tableRow.select("td").get(2).select("span").size()==2){
+                    subjectString = tableRow.select("td").get(2).select("span").get(1).attr("title");
+                    sub.setSubjectChange(Boolean.TRUE);
+                } else {
+                    subjectString = tableRow.select("td").get(2).select("span").first().attr("title");
+                    sub.setSubjectChange(Boolean.FALSE);
+                }
                 String whoString = tableRow.select("td").first().text();
                 String hour = tableRow.select("td").get(1).text();
-                String teacher = tableRow.select("td").get(3).text();
-                String comment = tableRow.select("td").get(4).text();
-
+                String teacherString = tableRow.select("td").get(3).text();
+                String comment = tableRow.select("td").get(5).text();
+                String clazzString= tableRow.select("td").get(4).text();//
+                                
+                 if(teacherString.contains("➔")){
+                 sub.setTeacherChange(Boolean.TRUE);
+                 sub.setTeacher(teacherString.substring(teacherString.indexOf("➔")+1,teacherString.length() ));
+                }else{
+                 sub.setTeacherChange(Boolean.FALSE);
+                 sub.setTeacher(teacherString);
+                }
+                
+                if(clazzString.contains("➔")){
+                 sub.setClazzChange(Boolean.TRUE);
+                 sub.setClazz(clazzString.substring(clazzString.indexOf("➔")+1, clazzString.length() ));
+                }else{
+                 sub.setClazzChange(Boolean.FALSE);
+                 sub.setClazz(clazzString);
+                }
+                
                 List<String> whoArray = Arrays.asList(whoString.split("\\s*,\\s*"));
                 sub.setWho(whoArray);
+                sub.setDate(tomorrowDate);
                 sub.setComment(comment);
                 sub.setHour(hour);
-                sub.setTeacher(teacher);
-                sub.setSubject(subject);
-
+                int id= (int) new Date().getTime();
+                sub.setID(id);
+                sub.setSubject(subjectString);
                 substitutions.add(sub);
+                System.out.println(sub.toString()); 
             }
         }
         return substitutions;
@@ -106,7 +134,8 @@ public class SubstitutionService {
         HashMap<String, String> subs = new HashMap<String, String>();
         for (Substitution s : newSubstitutions) {
             for (String clazz : s.getWho()) {
-                String msg = "Suplovačka: " + s.getHour() + " hodina, " + s.getComment();
+                Gson gson= new Gson();
+                String msg=gson.toJson(s);
                 subs.put(clazz, msg);
             }
         }

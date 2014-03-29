@@ -4,7 +4,7 @@ buildscript {
     }
     dependencies {
         classpath 'org.batcha.gradle.plugins:git-dependencies:0.1'
-        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.android.tools.build:gradle:0.9.+'
     }
 }
 apply plugin: 'android'
@@ -29,9 +29,6 @@ android {
 }
 
 dependencies {
-
-    // You must install or update the Google Repository through the SDK manager to use this dependency.
-    // The Google Repository (separate from the corresponding library) can be found in the Extras category.
     compile 'com.google.android.gms:play-services:4.0.+'
     compile 'com.google.code.gson:gson:2.2.+'
     compile 'com.android.support:appcompat-v7:18.0.+'

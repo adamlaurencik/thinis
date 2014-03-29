@@ -60,6 +60,7 @@ public class LoginService {
         form.appendChild(button);
 
         page = button.click();
+        page = client.getPage("https://gymdb.edupage.org/znamky/?");
 
         String htmlCode = page.asText();
 
@@ -82,7 +83,7 @@ public class LoginService {
         userInfo.setName(name);
 
         // grades
-        HtmlElement element = (HtmlElement) page.getElementById("jw1_zsv");
+        HtmlElement element = (HtmlElement) page.getByXPath("//table[contains(@class, 'edubarTable')]").get(0);
         List<HtmlElement> rows = element.getElementsByAttribute("tr", "style", "cursor:pointer");
 
         for (int i = 0; i < rows.size(); i++) {
