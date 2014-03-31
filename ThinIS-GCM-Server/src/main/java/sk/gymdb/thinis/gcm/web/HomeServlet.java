@@ -62,8 +62,6 @@ public class HomeServlet extends BaseServlet {
             out.print("</form>");
         }
         out.print("</body></html>");
-        SubstitutionNotificator notificator= new SubstitutionNotificator();
-        notificator.run();
         resp.setStatus(HttpServletResponse.SC_OK);
     }
 

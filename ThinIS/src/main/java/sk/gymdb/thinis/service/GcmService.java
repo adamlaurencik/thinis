@@ -62,16 +62,25 @@ public class GcmService {
         if (GcmService.checkPlayServices(caller)) {
             gcm = GoogleCloudMessaging.getInstance(caller);
             regId = getRegistrationId(context);
+            registerInBackground();
 
-            if (regId == null) {
-                registerInBackground();
-            }
-            else{
-                // todo: Unregister
-                registerInBackground();
-            }
         } else {
             throw new GcmServiceException("Google play services unavailable.");
+        }
+    }
+
+    private void unregister() throws GcmServiceException {
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost(serverUrl + "unregister");
+
+        try {
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("regId", regId));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            httpclient.execute(httppost);
+            System.out.println("Unregistered");
+        } catch (Exception ex) {
+            throw new GcmServiceException(ex);
         }
     }
 
@@ -156,9 +165,10 @@ public class GcmService {
             nameValuePairs.add(new BasicNameValuePair("regClazz", clazz));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             httpclient.execute(httppost);
-            System.out.println("Zaregistrovane");
+            System.out.println("Registered on server with regID: "+ regId);
         } catch (Exception ex) {
             throw new GcmServiceException(ex);
+
         }
     }
 
@@ -185,12 +195,11 @@ public class GcmService {
         @Override
         protected Object doInBackground(String... params) {
             String msg = null;
-            Boolean succesful= false;
-            for (int i=1;i<5 || succesful; i++){
             try {
                 if (gcm == null) {
                     gcm = GoogleCloudMessaging.getInstance(context);
                 }
+                if (!(regId == null)) unregister();
 
                 regId = gcm.register(senderId);
 
@@ -208,13 +217,11 @@ public class GcmService {
 
                 // Persist the regID - no need to register again.
                 storeRegistrationId(context, regId);
-                succesful=true;
+
             } catch (Exception ex) {
                 msg = "Error :" + ex.getMessage();
-                // If there is an error, don't just keep trying to register.
-                // Require the user to click a button again, or perform
-                // exponential back-off.
-            }}
+                System.out.println("Did not register because of: "+ ex.getMessage());
+            }
             return msg;
         }
 

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,6 +37,9 @@ public class HomeActivity extends Activity implements LoginDelegate {
 
     private Menu actionBarMenu;
     private LoginService loginService;
+    private ActionBar.Tab first;
+    private ActionBar.Tab second;
+    private ActionBar.Tab grades;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,12 +73,20 @@ public class HomeActivity extends Activity implements LoginDelegate {
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // tabs
+        grades=actionBar.newTab().setText(tabs[2]);
+        grades.setTabListener(new TabListener(this, tabs[2], GradesOverviewFragment.class));
         actionBar.addTab(actionBar.newTab().setText(tab1)
                 .setTabListener(new TabListener(this, tabs[0], TodayOverviewFragment.class)));
         actionBar.addTab(actionBar.newTab().setText(tab2)
                 .setTabListener(new TabListener(this, tabs[2], NextDayOverviewFragment.class)));
-        actionBar.addTab(actionBar.newTab().setText(tabs[2])
-                .setTabListener(new TabListener(this, tabs[2], GradesOverviewFragment.class)));
+        actionBar.addTab(grades);
+        Intent previous= getIntent();
+        String whichTab=previous.getStringExtra("Tab");
+        if(whichTab!=null) {
+            if (whichTab.equals("grades")) {
+                actionBar.selectTab(grades);
+            }
+        }
     }
 
     @Override
@@ -118,11 +130,10 @@ public class HomeActivity extends Activity implements LoginDelegate {
                     return;
                 } else {
                     loginService = new LoginService(getApplicationContext());
+                    loginService.setLoginDelegate(this);
                     loginService.execute();
                 }
             }
-            loginService.setLoginDelegate(this);
-            loginService.execute();
         } else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setTitle(R.string.credentials);
@@ -154,7 +165,8 @@ public class HomeActivity extends Activity implements LoginDelegate {
     @Override
     public void loginSuccessful(String message) {
         showProgress(false);
-        // todo refresh grades overview fragment
+        Toast.makeText(this,"Známky sa obnovili",Toast.LENGTH_LONG).show();
+        getActionBar().selectTab(grades);
     }
 
     @Override

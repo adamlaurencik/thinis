@@ -22,7 +22,7 @@ public class Notificator implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
 
         substitutionsScheduler = Executors.newSingleThreadScheduledExecutor();
-        substitutionsScheduler.scheduleAtFixedRate(new SubstitutionNotificator(), 0, 1, TimeUnit.HOURS);
+        substitutionsScheduler.scheduleAtFixedRate(new SubstitutionNotificator(), 0, 1, TimeUnit.MINUTES);
 
     }
 

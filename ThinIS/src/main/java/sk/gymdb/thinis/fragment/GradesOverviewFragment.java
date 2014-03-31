@@ -13,8 +13,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -56,16 +56,16 @@ public class GradesOverviewFragment extends Fragment {
         ScrollView view= (ScrollView) rootView.findViewById(R.id.grades_scroll);
         TableLayout table = (TableLayout) rootView.findViewById(R.id.grades_table);
         table.setShrinkAllColumns(true);
-        table.setVerticalGravity(LinearLayout.VERTICAL);
         if (info == null) {
             TextView noData = new TextView(context);
             ImageView smiley= new ImageView(context);
-            Bitmap smileyBitmap= BitmapFactory.decodeResource(context.getResources(),R.drawable.sad);
+            Bitmap smileyBitmap= BitmapFactory.decodeResource(context.getResources(), R.drawable.sad);
             Display mDisplay = getActivity().getWindowManager().getDefaultDisplay();
             smileyBitmap=smileyBitmap.createScaledBitmap(smileyBitmap,mDisplay.getWidth()/2,mDisplay.getWidth()/2,false);
+            table.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.CENTER_VERTICAL));
             smiley.setImageBitmap(smileyBitmap);
             noData.setGravity(Gravity.CENTER);
-            noData.setText("Žiadne záznamy o známkach");
+            noData.setText("Nie sú žiadne údaje o známkach");
             table.addView(smiley);
             table.addView(noData);
         } else {

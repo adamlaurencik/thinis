@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import sk.gymdb.thinis.delegate.LoginDelegate;
 import sk.gymdb.thinis.service.LoginService;
@@ -201,6 +202,7 @@ public class LoginActivity extends Activity implements LoginDelegate {
     @Override
     public void loginSuccessful(String output) {
         showProgress(false);
+        Toast.makeText(this,"Ste prihlásený ako: "+ output,Toast.LENGTH_LONG).show();
         goToHomeActivity();
     }
 
@@ -237,6 +239,7 @@ public class LoginActivity extends Activity implements LoginDelegate {
 
     public void goToHomeActivity() {
         Intent activityChangeIntent = new Intent(LoginActivity.this, HomeActivity.class);
+        activityChangeIntent.putExtra("Tab","grades");
         LoginActivity.this.startActivity(activityChangeIntent);
     }
 }

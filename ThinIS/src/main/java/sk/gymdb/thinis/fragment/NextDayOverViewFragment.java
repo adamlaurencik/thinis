@@ -32,28 +32,30 @@ import sk.gymdb.thinis.R;
 import sk.gymdb.thinis.model.pojo.Substitution;
 
 /**
- * @author Matej Kobza
+ * Created by Admin on 23/03/2014.
  */
-public class TodayOverviewFragment extends Fragment {
+public class NextDayOverviewFragment extends Fragment
 
-    private long time;
+    {
 
-    public TodayOverviewFragment() {
+        private long time;
+
+        public NextDayOverviewFragment() {
 
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
         Context context=getActivity().getApplicationContext();
-        int color = Color.rgb(166, 42, 42);
-        int color2=Color.rgb(255,64,64);
+        int color = Color.rgb(50, 205, 50);
+        int color2=Color.rgb(60,179,113);
         View rootView = inflater.inflate(R.layout.fragment_grades_overview, container, false);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         Gson gson= new Gson();
         ScrollView view= (ScrollView) rootView.findViewById(R.id.grades_scroll);
-        TableLayout table = (TableLayout) rootView.findViewById(R.id.grades_table);
         rootView.setBackgroundColor(color);
+        TableLayout table = (TableLayout) rootView.findViewById(R.id.grades_table);
         table.setShrinkAllColumns(true);
         if (prefs.getString("substitutions", "").equals("")) {
             TextView noData = new TextView(context);
@@ -89,32 +91,29 @@ public class TodayOverviewFragment extends Fragment {
             headerTeacher.setText("KTO?");
             headerClazz.setText("KDE?");
             headerComment.setText("POZNÁMKA");
-
             // set Padding
             headerHour.setPadding(0, 0, 6, 10);
             headerSubject.setPadding(6, 0, 6, 10);
             headerTeacher.setPadding(6, 0, 6, 10);
             headerClazz.setPadding(6,0,6,10);
             headerComment.setPadding(6, 0, 0, 10);
-            //add Textviews to row
-            header.addView(headerHour);
-            header.addView(headerSubject);
-            header.addView(headerTeacher);
-            header.addView(headerClazz);
-            header.addView(headerComment);
             header.setBackgroundColor(color);
             table.addView(header);
             int rowColor=color;
+            Boolean atLeastOne=false;
             Calendar cal= Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_WEEK,1);
+            cal.add(Calendar.DAY_OF_WEEK,1);
             if (cal.get(Calendar.DAY_OF_WEEK) == 7) { // friday we need 2 more days
-                cal.add(Calendar.DAY_OF_YEAR, 1);
+                cal.add(Calendar.DAY_OF_YEAR, 2);
             } else if (cal.get(Calendar.DAY_OF_WEEK) == 1) { // saturday we still need one more
-                cal.add(Calendar.DAY_OF_YEAR, 1);
+                cal.add(Calendar.DAY_OF_YEAR, 2);
             }
 
             for(Iterator<Substitution> iter = substitutions.iterator(); iter.hasNext();){
                 Substitution s = iter.next();
                 if(cal.get(Calendar.DAY_OF_MONTH)==(s.getDate().getDate())){
+                atLeastOne=true;
                 TableRow row = new TableRow(context);
                 TextView hour = new TextView(context);
                 TextView subject = new TextView(context);
@@ -151,9 +150,17 @@ public class TodayOverviewFragment extends Fragment {
                 else rowColor=color2;
                 row.setBackgroundColor(rowColor);
                 table.addView(row);
-                }
+            }
+            }
+            if (atLeastOne){
+                //add Textviews to row
+                header.addView(headerHour);
+                header.addView(headerSubject);
+                header.addView(headerTeacher);
+                header.addView(headerClazz);
+                header.addView(headerComment);
             }
         }
         return view;
     }
-}
+    }
