@@ -26,7 +26,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 
 import sk.gymdb.thinis.R;
 import sk.gymdb.thinis.model.pojo.Substitution;
@@ -57,19 +56,6 @@ public class NextDayOverviewFragment extends Fragment
         rootView.setBackgroundColor(color);
         TableLayout table = (TableLayout) rootView.findViewById(R.id.grades_table);
         table.setShrinkAllColumns(true);
-        if (prefs.getString("substitutions", "").equals("")) {
-            TextView noData = new TextView(context);
-            ImageView smiley= new ImageView(context);
-            Bitmap smileyBitmap= BitmapFactory.decodeResource(context.getResources(), R.drawable.sad);
-            Display mDisplay = getActivity().getWindowManager().getDefaultDisplay();
-            smileyBitmap=smileyBitmap.createScaledBitmap(smileyBitmap,mDisplay.getWidth()/2,mDisplay.getWidth()/2,false);
-            table.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,Gravity.CENTER_VERTICAL ));
-            smiley.setImageBitmap(smileyBitmap);
-            noData.setGravity(Gravity.CENTER);
-            noData.setText("Nie sú žiadne údaje o suplovaní");
-            table.addView(smiley);
-            table.addView(noData);
-        }else{
             ArrayList<Substitution> substitutions= gson.fromJson(prefs.getString("substitutions", ""), new TypeToken<ArrayList<Substitution>>(){}.getType());
             TableRow header = new TableRow(context);
             header.setBackgroundColor(color);
@@ -109,9 +95,8 @@ public class NextDayOverviewFragment extends Fragment
             } else if (cal.get(Calendar.DAY_OF_WEEK) == 1) { // saturday we still need one more
                 cal.add(Calendar.DAY_OF_YEAR, 2);
             }
-
-            for(Iterator<Substitution> iter = substitutions.iterator(); iter.hasNext();){
-                Substitution s = iter.next();
+                if(!(substitutions==null)){
+                for(Substitution s: substitutions){
                 if(cal.get(Calendar.DAY_OF_MONTH)==(s.getDate().getDate())){
                 atLeastOne=true;
                 TableRow row = new TableRow(context);
@@ -152,6 +137,7 @@ public class NextDayOverviewFragment extends Fragment
                 table.addView(row);
             }
             }
+                }
             if (atLeastOne){
                 //add Textviews to row
                 header.addView(headerHour);
@@ -159,8 +145,20 @@ public class NextDayOverviewFragment extends Fragment
                 header.addView(headerTeacher);
                 header.addView(headerClazz);
                 header.addView(headerComment);
+            } else {
+                TextView noData = new TextView(context);
+                ImageView smiley= new ImageView(context);
+                Bitmap smileyBitmap= BitmapFactory.decodeResource(context.getResources(), R.drawable.sad);
+                Display mDisplay = getActivity().getWindowManager().getDefaultDisplay();
+                smileyBitmap=smileyBitmap.createScaledBitmap(smileyBitmap,mDisplay.getWidth()/2,mDisplay.getWidth()/2,false);
+                table.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,Gravity.CENTER_VERTICAL ));
+                smiley.setImageBitmap(smileyBitmap);
+                noData.setGravity(Gravity.CENTER);
+                noData.setText("Nie sú žiadne údaje o suplovaní");
+                table.addView(smiley);
+                table.addView(noData);
             }
-        }
+
         return view;
     }
     }

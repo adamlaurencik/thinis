@@ -1,5 +1,6 @@
 package sk.gymdb.thinis.web;
 
+import com.google.gson.Gson;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import sk.gymdb.thinis.gcm.server.*;
@@ -12,13 +13,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.http.entity.StringEntity;
+import sk.gymdb.thinis.model.Substitution;
 
 /**
  * Created by matejkobza on 21.12.2013.
@@ -51,22 +55,24 @@ public class SubstitutionNotificator implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Hello from a thread!");
-        // hashmap key is class, value is message
-        HashMap<String, String> substitutions = null;
         try {
+            System.out.println("Hello from a thread!");
+            // hashmap key is class, value is message
+            Set<Substitution> substitutions = new HashSet<Substitution>();
+            Gson gson=new Gson();
             substitutions = service.findSubstitutions();
-        } catch (IOException e) {
-            e.printStackTrace();        }
-        if (substitutions != null) {
-            if (!substitutions.isEmpty()) {
-                for (String clazz : substitutions.keySet()) {
-                    // send substitution
-                    List<Registration> devices = Datastore.getDevices(clazz);
-                    String message = substitutions.get(clazz);
-                    sendMessages(devices, message);
+            if (substitutions != null) {
+                if (!substitutions.isEmpty()) {
+                    for (Substitution s : substitutions) {
+                        for (String clazz: s.getWho()){
+                            List<Registration> devices = Datastore.getDevices(clazz);
+                            String message = gson.toJson(s);
+                            sendMessages(devices, message);
+                        }}
                 }
             }
+        } catch (IOException ex) {
+            Logger.getLogger(SubstitutionNotificator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
